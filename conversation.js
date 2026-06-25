@@ -24,7 +24,9 @@ const SHOP_TIMING =
 
 const SHOP_LOCATION =
   "📍 *Our Location*\nMy Mercury Dry Cleaners\n[1st floor, Infornt of shukwari bazar]\n[Near old Pvt Bus Stand, Gandhi nagar]\n[Mahoba, Uttar Pradesh - pincode- 210427]\n\nGoogle Maps: [https://maps.app.goo.gl/7tZu9Dq4LYmiZMHx6]";
-
+// Banner Image URL
+const SHOP_BANNER =
+  "https://drive.google.com/uc?export=view&id=YOUR_FILE_ID";
 const SERVICES_TEXT =
   "🧺 *Our Services*\n\n• Dry Cleaning\n• Laundry\n• Steam Iron\n\nReply *4* to see our full price list.";
 
