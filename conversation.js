@@ -23,7 +23,7 @@ const SHOP_TIMING =
   "🕒 *Shop Timing*\nMonday - Saturday: 9:30 AM - 8:30 PM\nSunday: 10:00 AM - 8:00 PM";
 
 const SHOP_LOCATION =
-  "📍 *Our Location*\nMy Mercury Dry Cleaners\n[1st floor, Infornt of shukwari bazar]\n[Near old Pvt Bus Stand, Gandhi nagar]\n[Mahoba - Pincode-210427]\n\nGoogle Maps: [https://maps.app.goo.gl/xxveghHtvhFcEq65A]";
+  "📍 *Our Location*\nMy Mercury Dry Cleaners\n 1st floor, Infornt of shukwari bazar n Near old Pvt Bus Stand, Gandhi nagar \n Mahoba - Pincode-210427 \n\nGoogle Maps: https://maps.app.goo.gl/xxveghHtvhFcEq65A";
 
 // Image shown below the location text. Served as a static file by index.js
 // from the /assets folder (see index.js for PUBLIC_BASE_URL config).
