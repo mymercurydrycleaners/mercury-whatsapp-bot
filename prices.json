@@ -1,870 +1,1117 @@
-{
-  "Men": [
-    {
-      "garment": "Shirt",
-      "price": 30
-    },
-    {
-      "garment": "T Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Jeans",
-      "price": 30
-    },
-    {
-      "garment": "Pants",
-      "price": 30
-    },
-    {
-      "garment": "Nehru Jacket",
-      "price": 120
-    },
-    {
-      "garment": "Suit Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Blazer",
-      "price": 180
-    },
-    {
-      "garment": "Suit 2 Pcs",
-      "price": 250
-    },
-    {
-      "garment": "Suit 3 Pcs",
-      "price": 280
-    },
-    {
-      "garment": "Jodhpurii Suit",
-      "price": 250
-    },
-    {
-      "garment": "indowestern 3 Pc",
-      "price": 300
-    },
-    {
-      "garment": "Jacket Half",
-      "price": 130
-    },
-    {
-      "garment": "Jacket",
-      "price": 150
-    },
-    {
-      "garment": "Jacket Cotton",
-      "price": 180
-    },
-    {
-      "garment": "Woolen  Jacket",
-      "price": 180
-    },
-    {
-      "garment": "Kurta Pyajama",
-      "price": 60
-    },
-    {
-      "garment": "Kurta Pyajama (Designer )",
-      "price": 100
-    },
-    {
-      "garment": "Kurta",
-      "price": 30
-    },
-    {
-      "garment": "Pyjama",
-      "price": 30
-    },
-    {
-      "garment": "Kurta (Designer )",
-      "price": 50
-    },
-    {
-      "garment": "Coat",
-      "price": 180
-    },
-    {
-      "garment": "Leather Jacket",
-      "price": 200
-    },
-    {
-      "garment": "Waist Coat",
-      "price": 50
-    },
-    {
-      "garment": "Shorts",
-      "price": 30
-    },
-    {
-      "garment": "Sherwani 3Pc",
-      "price": 300
-    },
-    {
-      "garment": "Sherwani 2 Pc",
-      "price": 250
-    },
-    {
-      "garment": "Sherwani",
-      "price": 200
-    },
-    {
-      "garment": "Sports Jacket",
-      "price": 150
-    },
-    {
-      "garment": "Sweater Full",
-      "price": 100
-    },
-    {
-      "garment": "Sweater Half",
-      "price": 80
-    },
-    {
-      "garment": "Sweat Shirt",
-      "price": 50
-    },
-    {
-      "garment": "Pullover",
-      "price": 100
-    },
-    {
-      "garment": "Pathani Suit",
-      "price": 0
-    },
-    {
-      "garment": "Wardi ( Police)",
-      "price": 100
-    },
-    {
-      "garment": "Woolen Loi",
-      "price": 100
-    },
-    {
-      "garment": "Pagdi",
-      "price": 50
-    },
-    {
-      "garment": "Woolen Inner",
-      "price": 50
-    },
-    {
-      "garment": "Woolen Pajami",
-      "price": 50
-    },
-    {
-      "garment": "Gawn",
-      "price": 100
-    },
-    {
-      "garment": "Dhoti",
-      "price": 70
-    },
-    {
-      "garment": "Nehru Jacket +  Pant",
-      "price": 150
-    },
-    {
-      "garment": "Waist Coat + Pant",
-      "price": 100
-    },
-    {
-      "garment": "Kurta Pajama + Nj",
-      "price": 180
-    },
-    {
-      "garment": "jodhpuri suit",
-      "price": 250
-    },
-    {
-      "garment": "Woolen Shirt",
-      "price": 50
-    },
-    {
-      "garment": "Achkan",
-      "price": 0
-    },
-    {
-      "garment": "Capri",
-      "price": 30
-    },
-    {
-      "garment": "Laundry Garment",
-      "price": 0
-    },
-    {
-      "garment": "Tie",
-      "price": 20
-    },
-    {
-      "garment": "COVER",
-      "price": 0
-    },
-    {
-      "garment": "Dhoti Kurta",
-      "price": 100
-    },
-    {
-      "garment": "Chunri sherwani 3 pc",
-      "price": 0
-    },
-    {
-      "garment": "Longcoat",
-      "price": 200
-    },
-    {
-      "garment": "Gamcha",
-      "price": 30
-    },
-    {
-      "garment": "Track Pant",
-      "price": 50
-    },
-    {
-      "garment": "Jacket (Denim)",
-      "price": 100
-    },
-    {
-      "garment": "Bath Robe",
-      "price": 100
-    },
-    {
-      "garment": "Sweat Pants",
-      "price": 50
-    },
-    {
-      "garment": "Tuxedo",
-      "price": 0
-    },
-    {
-      "garment": "Track Suit",
-      "price": 100
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
-    },
-    {
-      "garment": "Undershirt",
-      "price": 15
-    },
-    {
-      "garment": "Safari Suit",
-      "price": 100
-    },
-    {
-      "garment": "Overcoat",
-      "price": 200
-    },
-    {
-      "garment": "Jacket Wooeln Half",
-      "price": 150
-    }
-  ],
-  "Women": [
-    {
-      "garment": "Ladies Suit Western",
-      "price": 250
-    },
-    {
-      "garment": "Jumper",
-      "price": 0
-    },
-    {
-      "garment": "Dangree",
-      "price": 0
-    },
-    {
-      "garment": "Stocking",
-      "price": 0
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
-    },
-    {
-      "garment": "T Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Choli",
-      "price": 0
-    },
-    {
-      "garment": "Blouse",
-      "price": 20
-    },
-    {
-      "garment": "Jeans",
-      "price": 30
-    },
-    {
-      "garment": "Pants",
-      "price": 30
-    },
-    {
-      "garment": "Capri",
-      "price": 0
-    },
-    {
-      "garment": "Track Pant",
-      "price": 50
-    },
-    {
-      "garment": "Dress",
-      "price": 0
-    },
-    {
-      "garment": "Dress long",
-      "price": 0
-    },
-    {
-      "garment": "Slacks",
-      "price": 0
-    },
-    {
-      "garment": "Skirt",
-      "price": 0
-    },
-    {
-      "garment": "Scarf",
-      "price": 0
-    },
-    {
-      "garment": "Wedding Dress",
-      "price": 300
-    },
-    {
-      "garment": "Jacket Half",
-      "price": 130
-    },
-    {
-      "garment": "Sport Jacket",
-      "price": 150
-    },
-    {
-      "garment": "Gawn 4 pc",
-      "price": 0
-    },
-    {
-      "garment": "Chunni",
-      "price": 30
-    },
-    {
-      "garment": "Petticoat",
-      "price": 30
-    },
-    {
-      "garment": "Brassieres",
-      "price": 0
-    },
-    {
-      "garment": "Ladies Suit Ethnic",
-      "price": 0
-    },
-    {
-      "garment": "Bikini",
-      "price": 0
-    },
-    {
-      "garment": "Gawm 3Pc",
-      "price": 200
-    },
-    {
-      "garment": "Burkha",
-      "price": 100
-    },
-    {
-      "garment": "Lehnga 4Pc",
-      "price": 200
-    },
-    {
-      "garment": "Saree",
-      "price": 150
-    },
-    {
-      "garment": "Saree (Worked)",
-      "price": 200
-    },
-    {
-      "garment": "Lehenga Saree",
-      "price": 200
-    },
-    {
-      "garment": "Lehnega 3pc",
-      "price": 250
-    },
-    {
-      "garment": "Lehenga 2pc",
-      "price": 200
-    },
-    {
-      "garment": "Lehnga",
-      "price": 200
-    },
-    {
-      "garment": "Salwar Suit 3pc",
-      "price": 100
-    },
-    {
-      "garment": "Salwar Suit 2pc",
-      "price": 80
-    },
-    {
-      "garment": "Sarara 3pc",
-      "price": 150
-    },
-    {
-      "garment": "Sarara 2pc",
-      "price": 150
-    },
-    {
-      "garment": "Gown",
-      "price": 150
-    },
-    {
-      "garment": "Gown 2pc",
-      "price": 150
-    },
-    {
-      "garment": "Kurti (Long)",
-      "price": 80
-    },
-    {
-      "garment": "Kurti",
-      "price": 50
-    },
-    {
-      "garment": "Salwar",
-      "price": 30
-    },
-    {
-      "garment": "Jacket",
-      "price": 150
-    },
-    {
-      "garment": "Shawl",
-      "price": 80
-    },
-    {
-      "garment": "Pullover",
-      "price": 100
-    },
-    {
-      "garment": "Cardigan",
-      "price": 100
-    },
-    {
-      "garment": "Coat",
-      "price": 180
-    },
-    {
-      "garment": "Long Coat",
-      "price": 200
-    },
-    {
-      "garment": "Over Coat",
-      "price": 200
-    }
-  ],
-  "Kids": [
-    {
-      "garment": "Sport Jacket",
-      "price": 0
-    },
-    {
-      "garment": "Sherwani",
-      "price": 150
-    },
-    {
-      "garment": "Pullover",
-      "price": 0
-    },
-    {
-      "garment": "T Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Capri",
-      "price": 0
-    },
-    {
-      "garment": "Shorts",
-      "price": 0
-    },
-    {
-      "garment": "Dress long",
-      "price": 100
-    },
-    {
-      "garment": "Dress",
-      "price": 100
-    },
-    {
-      "garment": "Tie",
-      "price": 0
-    },
-    {
-      "garment": "Girl Suit Ethnic",
-      "price": 0
-    },
-    {
-      "garment": "Gown",
-      "price": 100
-    },
-    {
-      "garment": "Coat",
-      "price": 0
-    },
-    {
-      "garment": "Dangree",
-      "price": 0
-    },
-    {
-      "garment": "Lehnga",
-      "price": 150
-    },
-    {
-      "garment": "Choli",
-      "price": 0
-    },
-    {
-      "garment": "Sherwani 3pc",
-      "price": 200
-    },
-    {
-      "garment": "Lehenga 2Pc",
-      "price": 150
-    },
-    {
-      "garment": "Lehenga 3pc",
-      "price": 150
-    },
-    {
-      "garment": "Gown 2Pc",
-      "price": 150
-    },
-    {
-      "garment": "Sherwani 2 pc",
-      "price": 180
-    },
-    {
-      "garment": "Kurta Pajam + NJ",
-      "price": 110
-    },
-    {
-      "garment": "Nehru Jacket",
-      "price": 50
-    },
-    {
-      "garment": "Jacket",
-      "price": 100
-    },
-    {
-      "garment": "Jacket Half",
-      "price": 100
-    },
-    {
-      "garment": "BLazer (School)",
-      "price": 150
-    },
-    {
-      "garment": "Blazer",
-      "price": 150
-    },
-    {
-      "garment": "Suit 2 Pcs",
-      "price": 150
-    },
-    {
-      "garment": "Suit 3 Pcs",
-      "price": 200
-    },
-    {
-      "garment": "Long Coat",
-      "price": 0
-    },
-    {
-      "garment": "Sweat Shirt",
-      "price": 50
-    },
-    {
-      "garment": "Waist Coat",
-      "price": 0
-    },
-    {
-      "garment": "Sweater Half",
-      "price": 50
-    },
-    {
-      "garment": "Pathani Suit",
-      "price": 60
-    },
-    {
-      "garment": "Achkan",
-      "price": 0
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
-    },
-    {
-      "garment": "Skirt",
-      "price": 30
-    },
-    {
-      "garment": "Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Jeans",
-      "price": 30
-    },
-    {
-      "garment": "Pants",
-      "price": 30
-    },
-    {
-      "garment": "Kurta",
-      "price": 30
-    },
-    {
-      "garment": "Pyjama",
-      "price": 30
-    },
-    {
-      "garment": "Kurta Pyajama",
-      "price": 60
-    },
-    {
-      "garment": "Track Pant",
-      "price": 30
-    }
-  ],
-  "Household": [
-    {
-      "garment": "Floor Mat",
-      "price": 100
-    },
-    {
-      "garment": "Foot Mats",
-      "price": 0
-    },
-    {
-      "garment": "Socks",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Single",
-      "price": 200
-    },
-    {
-      "garment": "Blanket Double",
-      "price": 300
-    },
-    {
-      "garment": "Quilt Single",
-      "price": 150
-    },
-    {
-      "garment": "Quilt Double",
-      "price": 250
-    },
-    {
-      "garment": "Bed Sheet Double",
-      "price": 50
-    },
-    {
-      "garment": "Bed Sheet Single",
-      "price": 40
-    },
-    {
-      "garment": "Pillow Covers",
-      "price": 15
-    },
-    {
-      "garment": "Towel",
-      "price": 50
-    },
-    {
-      "garment": "Gloves",
-      "price": 0
-    },
-    {
-      "garment": "Table Cloth",
-      "price": 0
-    },
-    {
-      "garment": "Curtain",
-      "price": 0
-    },
-    {
-      "garment": "Bed Spread Double",
-      "price": 100
-    },
-    {
-      "garment": "Bed Spread Single",
-      "price": 70
-    },
-    {
-      "garment": "Carpet",
-      "price": 20
-    },
-    {
-      "garment": "Bag",
-      "price": 0
-    },
-    {
-      "garment": "Cushion Covers",
-      "price": 0
-    },
-    {
-      "garment": "Hand Towel",
-      "price": 30
-    },
-    {
-      "garment": "Handkerchief",
-      "price": 0
-    },
-    {
-      "garment": "Chair Covers",
-      "price": 0
-    },
-    {
-      "garment": "Duvet",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Cover",
-      "price": 100
-    },
-    {
-      "garment": "Pillow",
-      "price": 0
-    }
-  ],
-  "Institutional": [
-    {
-      "garment": "Bed Sheet Double",
-      "price": 0
-    },
-    {
-      "garment": "Bed Sheet Single",
-      "price": 0
-    },
-    {
-      "garment": "Towel",
-      "price": 0
-    },
-    {
-      "garment": "Bed Spread Double",
-      "price": 0
-    },
-    {
-      "garment": "Bed Spread Single",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Double",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Single",
-      "price": 0
-    },
-    {
-      "garment": "Quilt Double",
-      "price": 0
-    },
-    {
-      "garment": "Quilt Single",
-      "price": 0
-    },
-    {
-      "garment": "Carpet",
-      "price": 12
-    },
-    {
-      "garment": "Chair Covers",
-      "price": 0
-    },
-    {
-      "garment": "Curtain (S)",
-      "price": 0
-    },
-    {
-      "garment": "Cushion Covers",
-      "price": 0
-    },
-    {
-      "garment": "Duvet",
-      "price": 0
-    },
-    {
-      "garment": "Foot Mats",
-      "price": 0
-    },
-    {
-      "garment": "Hand Towel",
-      "price": 0
-    },
-    {
-      "garment": "Pillow Covers",
-      "price": 0
-    },
-    {
-      "garment": "Table Cloth",
-      "price": 0
-    },
-    {
-      "garment": "Police Suit",
-      "price": 0
-    },
-    {
-      "garment": "Pool Towel",
-      "price": 0
-    },
-    {
-      "garment": "Curtain XL",
-      "price": 0
-    },
-    {
-      "garment": "Police Cap",
-      "price": 100
-    }
-  ],
-  "Others": [
-    {
-      "garment": "Rain Coat",
-      "price": 0
-    },
-    {
-      "garment": "Hat",
-      "price": 0
-    },
-    {
-      "garment": "Belt",
-      "price": 0
-    },
-    {
-      "garment": "Car Seatcover",
-      "price": 0
-    },
-    {
-      "garment": "Stuff Toy",
-      "price": 0
-    },
-    {
-      "garment": "Sports Shoes",
-      "price": 0
-    },
-    {
-      "garment": "Leather Shoes",
-      "price": 0
-    }
-  ]
-}
+[
+  {
+    "Category": "Men",
+    "Garment": "Shirt",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "T Shirt",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jeans",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Pants",
+    "30": 120
+  },
+  {
+    "Category": "Men",
+    "Garment": "Nehru Jacket",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Suit Shirt",
+    "30": 180
+  },
+  {
+    "Category": "Men",
+    "Garment": "Blazer",
+    "30": 250
+  },
+  {
+    "Category": "Men",
+    "Garment": "Suit 2 Pcs",
+    "30": 280
+  },
+  {
+    "Category": "Men",
+    "Garment": "Suit 3 Pcs",
+    "30": 250
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jodhpurii Suit",
+    "30": 300
+  },
+  {
+    "Category": "Men",
+    "Garment": "indowestern 3 Pc",
+    "30": 130
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jacket Half",
+    "30": 150
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jacket",
+    "30": 180
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jacket Cotton",
+    "30": 180
+  },
+  {
+    "Category": "Men",
+    "Garment": "Woolen  Jacket",
+    "30": 60
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta Pyajama",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta Pyajama (Designer )",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Pyjama",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta (Designer )",
+    "30": 180
+  },
+  {
+    "Category": "Men",
+    "Garment": "Coat",
+    "30": 200
+  },
+  {
+    "Category": "Men",
+    "Garment": "Leather Jacket",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Waist Coat",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Shorts",
+    "30": 300
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sherwani 3Pc",
+    "30": 250
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sherwani 2 Pc",
+    "30": 200
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sherwani",
+    "30": 150
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sports Jacket",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sweater Full",
+    "30": 80
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sweater Half",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sweat Shirt",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Pullover",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Pathani Suit",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Wardi ( Police)",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Woolen Loi",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Pagdi",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Woolen Inner ",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Woolen Pajami ",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Gawn",
+    "30": 70
+  },
+  {
+    "Category": "Men",
+    "Garment": "Dhoti",
+    "30": 150
+  },
+  {
+    "Category": "Men",
+    "Garment": "Nehru Jacket +  Pant",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Waist Coat + Pant ",
+    "30": 180
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta Pajama + Nj",
+    "30": 250
+  },
+  {
+    "Category": "Men",
+    "Garment": "jodhpuri suit",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Woolen Shirt ",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Achkan",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Capri",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Laundry Garment",
+    "30": 20
+  },
+  {
+    "Category": "Men",
+    "Garment": "Tie",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "COVER",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Dhoti Kurta",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Chunri sherwani 3 pc",
+    "30": 200
+  },
+  {
+    "Category": "Men",
+    "Garment": "Longcoat",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Gamcha",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": "Track Pant",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jacket (Denim)",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Bath Robe",
+    "30": 50
+  },
+  {
+    "Category": "Men",
+    "Garment": "Sweat Pants",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Tuxedo",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Track Suit",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Swimming Costume",
+    "30": 15
+  },
+  {
+    "Category": "Men",
+    "Garment": "Undershirt",
+    "30": 100
+  },
+  {
+    "Category": "Men",
+    "Garment": "Safari Suit",
+    "30": 200
+  },
+  {
+    "Category": "Men",
+    "Garment": "Overcoat",
+    "30": 150
+  },
+  {
+    "Category": "Men",
+    "Garment": "Jacket Wooeln Half",
+    "30": 80
+  },
+  {
+    "Category": "Men",
+    "Garment": "Kurta Pajama (White)",
+    "30": 30
+  },
+  {
+    "Category": "Men",
+    "Garment": " chunni ",
+    "30": 0
+  },
+  {
+    "Category": "Men",
+    "Garment": "Chunni",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Saree",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Saree (Worked)",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga Saree",
+    "30": 20
+  },
+  {
+    "Category": "Women",
+    "Garment": "Blouse",
+    "30": 50
+  },
+  {
+    "Category": "Women",
+    "Garment": "Kurti",
+    "30": 80
+  },
+  {
+    "Category": "Women",
+    "Garment": "Kurti (Long)",
+    "30": 80
+  },
+  {
+    "Category": "Women",
+    "Garment": "Salwar Suit 2pc",
+    "30": 100
+  },
+  {
+    "Category": "Women",
+    "Garment": "Salwar Suit 3pc",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Sarara 2pc",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Sarara 3pc",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga 2pc",
+    "30": 250
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehnega 3pc",
+    "30": 300
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga 3Pc (medium)",
+    "30": 350
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga 3Pc (Worked)",
+    "30": 400
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehenga 3Pc ( Heavy)",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gown",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gown 2pc",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gown 3 Pc (medium)",
+    "30": 300
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gown 3Pc (Heavy) ",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gawn 4 pc",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Petticoat",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Chunni",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Jacket",
+    "30": 100
+  },
+  {
+    "Category": "Women",
+    "Garment": "Cardigan",
+    "30": 80
+  },
+  {
+    "Category": "Women",
+    "Garment": "Shawl",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Shirt",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "T Shirt",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Pants",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Jeans",
+    "30": 250
+  },
+  {
+    "Category": "Women",
+    "Garment": "Ladies Suit Western",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Jumper",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Dangree",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Stocking",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Swimming Costume",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Choli",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Capri",
+    "30": 50
+  },
+  {
+    "Category": "Women",
+    "Garment": "Track Pant",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Dress",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Dress long",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Slacks",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Skirt",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Scarf",
+    "30": 300
+  },
+  {
+    "Category": "Women",
+    "Garment": "Wedding Dress",
+    "30": 130
+  },
+  {
+    "Category": "Women",
+    "Garment": "Jacket Half",
+    "30": 150
+  },
+  {
+    "Category": "Women",
+    "Garment": "Sport Jacket",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Brassieres",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Ladies Suit Ethnic",
+    "30": 0
+  },
+  {
+    "Category": "Women",
+    "Garment": "Bikini",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Gawm 3Pc",
+    "30": 100
+  },
+  {
+    "Category": "Women",
+    "Garment": "Burkha",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehnga 4Pc  ",
+    "30": 30
+  },
+  {
+    "Category": "Women",
+    "Garment": "Salwar",
+    "30": 100
+  },
+  {
+    "Category": "Women",
+    "Garment": "Pullover",
+    "30": 180
+  },
+  {
+    "Category": "Women",
+    "Garment": "Coat",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Lehnga",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Long Coat",
+    "30": 200
+  },
+  {
+    "Category": "Women",
+    "Garment": "Over Coat",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sport Jacket",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sherwani",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Pullover",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "T Shirt",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Capri",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Shorts",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Dress long",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Dress",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Tie",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Girl Suit Ethnic",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Gown",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Coat",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Dangree",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Lehnga",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Choli",
+    "30": 200
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sherwani 3pc",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Lehenga 2Pc",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Lehenga 3pc",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Gown 2Pc",
+    "30": 180
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sherwani 2 pc",
+    "30": 110
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Kurta Pajam + NJ",
+    "30": 50
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Nehru Jacket",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Jacket",
+    "30": 100
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Jacket Half",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "BLazer (School)",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Blazer",
+    "30": 150
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Suit 2 Pcs",
+    "30": 200
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Suit 3 Pcs",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Long Coat",
+    "30": 50
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sweat Shirt",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Waist Coat",
+    "30": 50
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Sweater Half",
+    "30": 60
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Pathani Suit",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Achkan",
+    "30": 0
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Swimming Costume",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Skirt",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Shirt",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Jeans",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Pants",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Kurta",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Pyjama",
+    "30": 60
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Kurta Pyajama",
+    "30": 30
+  },
+  {
+    "Category": "Kids",
+    "Garment": "Track Pant",
+    "30": 100
+  },
+  {
+    "Category": "Household",
+    "Garment": "Floor Mat ",
+    "30": 50
+  },
+  {
+    "Category": "Household",
+    "Garment": "Foot Mats",
+    "30": 30
+  },
+  {
+    "Category": "Household",
+    "Garment": "Socks",
+    "30": 200
+  },
+  {
+    "Category": "Household",
+    "Garment": "Blanket Single",
+    "30": 300
+  },
+  {
+    "Category": "Household",
+    "Garment": "Blanket Double",
+    "30": 150
+  },
+  {
+    "Category": "Household",
+    "Garment": "Quilt Single",
+    "30": 250
+  },
+  {
+    "Category": "Household",
+    "Garment": "Quilt Double",
+    "30": 60
+  },
+  {
+    "Category": "Household",
+    "Garment": "Bed Sheet Double",
+    "30": 40
+  },
+  {
+    "Category": "Household",
+    "Garment": "Bed Sheet Single",
+    "30": 15
+  },
+  {
+    "Category": "Household",
+    "Garment": "Pillow Covers",
+    "30": 50
+  },
+  {
+    "Category": "Household",
+    "Garment": "Towel",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Gloves",
+    "30": 50
+  },
+  {
+    "Category": "Household",
+    "Garment": "Table Cloth",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Curtain",
+    "30": 100
+  },
+  {
+    "Category": "Household",
+    "Garment": "Bed Spread Double",
+    "30": 70
+  },
+  {
+    "Category": "Household",
+    "Garment": "Bed Spread Single",
+    "30": 20
+  },
+  {
+    "Category": "Household",
+    "Garment": "Carpet",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Bag",
+    "30": 30
+  },
+  {
+    "Category": "Household",
+    "Garment": "Cushion Covers",
+    "30": 30
+  },
+  {
+    "Category": "Household",
+    "Garment": "Hand Towel",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Handkerchief",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Chair Covers",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Duvet",
+    "30": 100
+  },
+  {
+    "Category": "Household",
+    "Garment": "Blanket Cover",
+    "30": 0
+  },
+  {
+    "Category": "Household",
+    "Garment": "Pillow ",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Bed Sheet Double",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Bed Sheet Single",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Towel",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Bed Spread Double",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Bed Spread Single",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Blanket Double",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Blanket Single",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Quilt Double",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Quilt Single",
+    "30": 12.5
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Carpet",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Chair Covers",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Curtain (S)",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Cushion Covers",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Duvet",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Foot Mats",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Hand Towel",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Pillow Covers",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Table Cloth",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Police Suit",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Pool Towel",
+    "30": 0
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Curtain XL",
+    "30": 100
+  },
+  {
+    "Category": "Institutional",
+    "Garment": "Police Cap",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Rain Coat",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Hat",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Belt",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Car Seatcover",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Stuff Toy",
+    "30": 150
+  },
+  {
+    "Category": "Others",
+    "Garment": "Sports Shoes",
+    "30": 0
+  },
+  {
+    "Category": "Others",
+    "Garment": "Leather Shoes",
+    "30": null
+  }
+]
