@@ -75,7 +75,7 @@ You can ask me anything about
 
 ✅ Dry Cleaning
 
-✅ Laundry
+✅ Shop Location
 
 ✅ Stain Removal
 
