@@ -159,7 +159,13 @@ const priceContext=createPriceContext(text);
         lower.includes("shop")
     ) {
 
-        return [SHOP_LOCATION];
+        return [
+    SHOP_LOCATION,
+    {
+        type: "image",
+        path: "/assets/shop-banner.png"
+    }
+];
 
     }
 
