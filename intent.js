@@ -61,7 +61,7 @@ function findPrice(query) {
     }
   }
 
-  return unique.slice(0, 10);
+  return unique.slice(0, 95);
 }
 
 function createPriceContext(userMessage) {
