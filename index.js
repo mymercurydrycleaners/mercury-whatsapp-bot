@@ -72,7 +72,7 @@ app.post("/webhook", async (req, res) => {
 
     console.log(`Incoming message from ${from}: ${text}`);
 
-    const replies = handleMessage(from, text);
+const replies = await handleMessage(from, text);
 
     for (const reply of replies) {
       await sendReply(from, reply);
