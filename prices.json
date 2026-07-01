@@ -41,7 +41,7 @@
       "price": 250
     },
     {
-      "garment": "indowestern 3 Pc",
+      "garment": "Indowestern 3 Pc",
       "price": 300
     },
     {
@@ -57,7 +57,7 @@
       "price": 180
     },
     {
-      "garment": "Woolen  Jacket",
+      "garment": "Woolen Jacket",
       "price": 180
     },
     {
@@ -130,7 +130,7 @@
     },
     {
       "garment": "Pathani Suit",
-      "price": 0
+      "price": 80
     },
     {
       "garment": "Wardi ( Police)",
@@ -161,7 +161,7 @@
       "price": 70
     },
     {
-      "garment": "Nehru Jacket +  Pant",
+      "garment": "Nehru Jacket + Pant",
       "price": 150
     },
     {
@@ -181,32 +181,16 @@
       "price": 50
     },
     {
-      "garment": "Achkan",
-      "price": 0
-    },
-    {
       "garment": "Capri",
       "price": 30
-    },
-    {
-      "garment": "Laundry Garment",
-      "price": 0
     },
     {
       "garment": "Tie",
       "price": 20
     },
     {
-      "garment": "COVER",
-      "price": 0
-    },
-    {
       "garment": "Dhoti Kurta",
       "price": 100
-    },
-    {
-      "garment": "Chunri sherwani 3 pc",
-      "price": 0
     },
     {
       "garment": "Longcoat",
@@ -218,7 +202,7 @@
     },
     {
       "garment": "Track Pant",
-      "price": 50
+      "price": 30
     },
     {
       "garment": "Jacket (Denim)",
@@ -233,16 +217,8 @@
       "price": 50
     },
     {
-      "garment": "Tuxedo",
-      "price": 0
-    },
-    {
       "garment": "Track Suit",
       "price": 100
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
     },
     {
       "garment": "Undershirt",
@@ -259,47 +235,127 @@
     {
       "garment": "Jacket Wooeln Half",
       "price": 150
+    },
+    {
+      "garment": "Kurta Pajama (White)",
+      "price": 80
+    },
+    {
+      "garment": "chunni",
+      "price": 30
     }
   ],
   "Women": [
     {
-      "garment": "Ladies Suit Western",
-      "price": 250
+      "garment": "Saree",
+      "price": 150
     },
     {
-      "garment": "Jumper",
-      "price": 0
+      "garment": "Saree (Worked)",
+      "price": 200
     },
     {
-      "garment": "Dangree",
-      "price": 0
-    },
-    {
-      "garment": "Stocking",
-      "price": 0
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
-    },
-    {
-      "garment": "T Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Shirt",
-      "price": 30
-    },
-    {
-      "garment": "Choli",
-      "price": 0
+      "garment": "Lehenga Saree",
+      "price": 200
     },
     {
       "garment": "Blouse",
       "price": 20
     },
     {
-      "garment": "Jeans",
+      "garment": "Kurti",
+      "price": 50
+    },
+    {
+      "garment": "Kurti (Long)",
+      "price": 80
+    },
+    {
+      "garment": "Salwar Suit 2pc",
+      "price": 80
+    },
+    {
+      "garment": "Salwar Suit 3pc",
+      "price": 100
+    },
+    {
+      "garment": "Sarara 2pc",
+      "price": 150
+    },
+    {
+      "garment": "Sarara 3pc",
+      "price": 150
+    },
+    {
+      "garment": "Lehenga",
+      "price": 200
+    },
+    {
+      "garment": "Lehenga 2pc",
+      "price": 200
+    },
+    {
+      "garment": "Lehnega 3pc",
+      "price": 250
+    },
+    {
+      "garment": "Lehenga 3Pc (medium)",
+      "price": 300
+    },
+    {
+      "garment": "Lehenga 3Pc (Worked)",
+      "price": 350
+    },
+    {
+      "garment": "Lehenga 3Pc ( Heavy)",
+      "price": 400
+    },
+    {
+      "garment": "Gown",
+      "price": 150
+    },
+    {
+      "garment": "Gown 2pc",
+      "price": 150
+    },
+    {
+      "garment": "Gown 3 Pc (medium)",
+      "price": 200
+    },
+    {
+      "garment": "Gown 3Pc (Heavy)",
+      "price": 300
+    },
+    {
+      "garment": "Gawn 4 pc",
+      "price": 250
+    },
+    {
+      "garment": "Petticoat",
+      "price": 30
+    },
+    {
+      "garment": "Chunni",
+      "price": 30
+    },
+    {
+      "garment": "Jacket",
+      "price": 150
+    },
+    {
+      "garment": "Cardigan",
+      "price": 100
+    },
+    {
+      "garment": "Shawl",
+      "price": 80
+    },
+    {
+      "garment": "Shirt",
+      "price": 30
+    },
+    {
+      "garment": "T Shirt",
       "price": 30
     },
     {
@@ -307,8 +363,20 @@
       "price": 30
     },
     {
+      "garment": "Jeans",
+      "price": 30
+    },
+    {
+      "garment": "Ladies Suit Western",
+      "price": 250
+    },
+    {
+      "garment": "Choli",
+      "price": 50
+    },
+    {
       "garment": "Capri",
-      "price": 0
+      "price": 30
     },
     {
       "garment": "Track Pant",
@@ -316,23 +384,19 @@
     },
     {
       "garment": "Dress",
-      "price": 0
+      "price": 150
     },
     {
       "garment": "Dress long",
-      "price": 0
-    },
-    {
-      "garment": "Slacks",
-      "price": 0
+      "price": 200
     },
     {
       "garment": "Skirt",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "Scarf",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "Wedding Dress",
@@ -347,30 +411,6 @@
       "price": 150
     },
     {
-      "garment": "Gawn 4 pc",
-      "price": 0
-    },
-    {
-      "garment": "Chunni",
-      "price": 30
-    },
-    {
-      "garment": "Petticoat",
-      "price": 30
-    },
-    {
-      "garment": "Brassieres",
-      "price": 0
-    },
-    {
-      "garment": "Ladies Suit Ethnic",
-      "price": 0
-    },
-    {
-      "garment": "Bikini",
-      "price": 0
-    },
-    {
       "garment": "Gawm 3Pc",
       "price": 200
     },
@@ -379,88 +419,24 @@
       "price": 100
     },
     {
-      "garment": "Lehnga 4Pc",
+      "garment": "Lehenga 4Pc",
       "price": 200
-    },
-    {
-      "garment": "Saree",
-      "price": 150
-    },
-    {
-      "garment": "Saree (Worked)",
-      "price": 200
-    },
-    {
-      "garment": "Lehenga Saree",
-      "price": 200
-    },
-    {
-      "garment": "Lehnega 3pc",
-      "price": 250
-    },
-    {
-      "garment": "Lehenga 2pc",
-      "price": 200
-    },
-    {
-      "garment": "Lehnga",
-      "price": 200
-    },
-    {
-      "garment": "Salwar Suit 3pc",
-      "price": 100
-    },
-    {
-      "garment": "Salwar Suit 2pc",
-      "price": 80
-    },
-    {
-      "garment": "Sarara 3pc",
-      "price": 150
-    },
-    {
-      "garment": "Sarara 2pc",
-      "price": 150
-    },
-    {
-      "garment": "Gown",
-      "price": 150
-    },
-    {
-      "garment": "Gown 2pc",
-      "price": 150
-    },
-    {
-      "garment": "Kurti (Long)",
-      "price": 80
-    },
-    {
-      "garment": "Kurti",
-      "price": 50
     },
     {
       "garment": "Salwar",
       "price": 30
     },
     {
-      "garment": "Jacket",
-      "price": 150
-    },
-    {
-      "garment": "Shawl",
-      "price": 80
-    },
-    {
       "garment": "Pullover",
-      "price": 100
-    },
-    {
-      "garment": "Cardigan",
       "price": 100
     },
     {
       "garment": "Coat",
       "price": 180
+    },
+    {
+      "garment": "Lehenga",
+      "price": 200
     },
     {
       "garment": "Long Coat",
@@ -474,7 +450,7 @@
   "Kids": [
     {
       "garment": "Sport Jacket",
-      "price": 0
+      "price": 100
     },
     {
       "garment": "Sherwani",
@@ -482,7 +458,7 @@
     },
     {
       "garment": "Pullover",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "T Shirt",
@@ -490,11 +466,11 @@
     },
     {
       "garment": "Capri",
-      "price": 0
+      "price": 30
     },
     {
       "garment": "Shorts",
-      "price": 0
+      "price": 30
     },
     {
       "garment": "Dress long",
@@ -506,11 +482,11 @@
     },
     {
       "garment": "Tie",
-      "price": 0
+      "price": 20
     },
     {
       "garment": "Girl Suit Ethnic",
-      "price": 0
+      "price": 150
     },
     {
       "garment": "Gown",
@@ -518,19 +494,19 @@
     },
     {
       "garment": "Coat",
-      "price": 0
+      "price": 100
     },
     {
       "garment": "Dangree",
-      "price": 0
+      "price": 50
     },
     {
-      "garment": "Lehnga",
+      "garment": "Lehenga",
       "price": 150
     },
     {
       "garment": "Choli",
-      "price": 0
+      "price": 150
     },
     {
       "garment": "Sherwani 3pc",
@@ -586,7 +562,7 @@
     },
     {
       "garment": "Long Coat",
-      "price": 0
+      "price": 150
     },
     {
       "garment": "Sweat Shirt",
@@ -594,7 +570,7 @@
     },
     {
       "garment": "Waist Coat",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "Sweater Half",
@@ -603,14 +579,6 @@
     {
       "garment": "Pathani Suit",
       "price": 60
-    },
-    {
-      "garment": "Achkan",
-      "price": 0
-    },
-    {
-      "garment": "Swimming Costume",
-      "price": 0
     },
     {
       "garment": "Skirt",
@@ -652,11 +620,11 @@
     },
     {
       "garment": "Foot Mats",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "Socks",
-      "price": 0
+      "price": 30
     },
     {
       "garment": "Blanket Single",
@@ -676,7 +644,7 @@
     },
     {
       "garment": "Bed Sheet Double",
-      "price": 50
+      "price": 60
     },
     {
       "garment": "Bed Sheet Single",
@@ -691,16 +659,8 @@
       "price": 50
     },
     {
-      "garment": "Gloves",
-      "price": 0
-    },
-    {
       "garment": "Table Cloth",
-      "price": 0
-    },
-    {
-      "garment": "Curtain",
-      "price": 0
+      "price": 50
     },
     {
       "garment": "Bed Spread Double",
@@ -715,156 +675,18 @@
       "price": 20
     },
     {
-      "garment": "Bag",
-      "price": 0
-    },
-    {
-      "garment": "Cushion Covers",
-      "price": 0
-    },
-    {
-      "garment": "Hand Towel",
-      "price": 30
-    },
-    {
-      "garment": "Handkerchief",
-      "price": 0
-    },
-    {
-      "garment": "Chair Covers",
-      "price": 0
-    },
-    {
-      "garment": "Duvet",
-      "price": 0
-    },
-    {
       "garment": "Blanket Cover",
       "price": 100
     },
     {
       "garment": "Pillow",
-      "price": 0
+      "price": 50
     }
   ],
   "Institutional": [
     {
-      "garment": "Bed Sheet Double",
-      "price": 0
-    },
-    {
-      "garment": "Bed Sheet Single",
-      "price": 0
-    },
-    {
-      "garment": "Towel",
-      "price": 0
-    },
-    {
-      "garment": "Bed Spread Double",
-      "price": 0
-    },
-    {
-      "garment": "Bed Spread Single",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Double",
-      "price": 0
-    },
-    {
-      "garment": "Blanket Single",
-      "price": 0
-    },
-    {
-      "garment": "Quilt Double",
-      "price": 0
-    },
-    {
-      "garment": "Quilt Single",
-      "price": 0
-    },
-    {
-      "garment": "Carpet",
-      "price": 12
-    },
-    {
-      "garment": "Chair Covers",
-      "price": 0
-    },
-    {
-      "garment": "Curtain (S)",
-      "price": 0
-    },
-    {
-      "garment": "Cushion Covers",
-      "price": 0
-    },
-    {
-      "garment": "Duvet",
-      "price": 0
-    },
-    {
-      "garment": "Foot Mats",
-      "price": 0
-    },
-    {
-      "garment": "Hand Towel",
-      "price": 0
-    },
-    {
-      "garment": "Pillow Covers",
-      "price": 0
-    },
-    {
-      "garment": "Table Cloth",
-      "price": 0
-    },
-    {
-      "garment": "Police Suit",
-      "price": 0
-    },
-    {
-      "garment": "Pool Towel",
-      "price": 0
-    },
-    {
-      "garment": "Curtain XL",
-      "price": 0
-    },
-    {
       "garment": "Police Cap",
       "price": 100
-    }
-  ],
-  "Others": [
-    {
-      "garment": "Rain Coat",
-      "price": 0
-    },
-    {
-      "garment": "Hat",
-      "price": 0
-    },
-    {
-      "garment": "Belt",
-      "price": 0
-    },
-    {
-      "garment": "Car Seatcover",
-      "price": 0
-    },
-    {
-      "garment": "Stuff Toy",
-      "price": 0
-    },
-    {
-      "garment": "Sports Shoes",
-      "price": 0
-    },
-    {
-      "garment": "Leather Shoes",
-      "price": 0
     }
   ]
 }
