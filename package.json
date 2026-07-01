@@ -1,17 +1,20 @@
 {
   "name": "mercury-dry-cleaners-whatsapp-bot",
-  "version": "1.0.0",
-  "description": "WhatsApp Business bot for My Mercury Dry Cleaners",
+  "version": "2.0.0",
+  "description": "AI Powered WhatsApp Bot for My Mercury Dry Cleaners",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "node index.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.7.2",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fuzzball": "^2.2.3"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18"
   }
 }
