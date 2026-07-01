@@ -1,100 +1,103 @@
-// intent.js
-
 const fs = require("fs");
 const path = require("path");
 const fuzz = require("fuzzball");
 
 const PRICE_DATA = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "prices.json"), "utf8")
+  fs.readFileSync(path.join(__dirname, "prices.json"), "utf8")
 );
 
-const CATEGORYS = Object.keys(PRICE_DATA);
+const CATEGORIES = Object.keys(PRICE_DATA);
 
-function findPrice(userMessage) {
+// Find ALL relevant matches
+function findPrice(query) {
+  const q = query.toLowerCase().trim();
 
-    const query = userMessage.toLowerCase().trim();
+  if (q.length < 2) return [];
 
-    let best = null;
-    let bestScore = 0;
+  const results = [];
 
-    for (const category of CATEGORYS) {
+  for (const category of CATEGORIES) {
+    for (const item of PRICE_DATA[category]) {
+      const garment = item.garment.toLowerCase();
 
-        for (const item of PRICE_DATA[category]) {
+      const score = fuzz.token_set_ratio(q, garment);
 
-            const garment = item.garment.toLowerCase();
+      // direct match
+      if (garment.includes(q)) {
+        results.push({
+          garment: item.garment,
+          price: item.price,
+          category,
+          score: 100,
+        });
+        continue;
+      }
 
-            const score = fuzz.token_set_ratio(query, garment);
-
-            if (score > bestScore) {
-
-                bestScore = score;
-
-                best = {
-                    category,
-                    garment: item.garment,
-                    price: item.price,
-                    score
-                };
-
-            }
-
-        }
-
+      // fuzzy match
+      if (score >= 65) {
+        results.push({
+          garment: item.garment,
+          price: item.price,
+          category,
+          score,
+        });
+      }
     }
+  }
 
-    if (bestScore < 60)
-        return null;
+  // Highest score first
+  results.sort((a, b) => b.score - a.score);
 
-    return best;
+  // Remove duplicate garments
+  const unique = [];
+  const used = new Set();
 
+  for (const item of results) {
+    const key = item.garment.toLowerCase();
+
+    if (!used.has(key)) {
+      used.add(key);
+      unique.push(item);
+    }
+  }
+
+  return unique.slice(0, 10);
 }
 
-function createPriceContext(userMessage){
+function createPriceContext(userMessage) {
+  const matches = findPrice(userMessage);
 
-    const result = findPrice(userMessage);
+  if (matches.length === 0) return "";
 
-    if(!result)
-        return "";
+  let context = `
+Customer asked about:
 
-    if(result.price==0){
+${userMessage}
 
-        return `
-Customer is asking about:
+Matching Price List:
 
-${result.garment}
-
-Category:
-
-${result.category}
-
-Price is unavailable.
-
-Tell customer politely to contact the shop or send photo.
 `;
 
-    }
+  for (const item of matches) {
+    context += `• ${item.garment} (${item.category}) : ${
+      item.price > 0 ? "₹" + item.price : "Contact Shop"
+    }\n`;
+  }
 
-    return `
-Customer is asking about
+  context += `
 
-${result.garment}
+Instructions:
 
-Category
-
-${result.category}
-
-Price
-
-₹${result.price}
-
-Use this exact price.
-
-Never change it.
+- Use ONLY the prices above.
+- If multiple variants exist, show ALL of them.
+- Never invent a price.
+- If customer is unsure, ask which variant they have.
 `;
 
+  return context;
 }
 
-module.exports={
-    findPrice,
-    createPriceContext
+module.exports = {
+  findPrice,
+  createPriceContext,
 };
