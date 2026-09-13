@@ -28,7 +28,7 @@ const GRAPH_API_URL = `https://graph.facebook.com/v20.0/${WHATSAPP_PHONE_NUMBER_
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 // ---------------------------------------------------------------------
-// Health check (useful to confirm the server is alive on Render, etc.)
+// Health check
 // ---------------------------------------------------------------------
 app.get("/", (req, res) => {
   res.send("My Mercury Dry Cleaners WhatsApp bot is running.");
@@ -63,16 +63,29 @@ app.post("/webhook", async (req, res) => {
     const message = value?.messages?.[0];
 
     if (!message) {
-      // Could be a status update (delivered/read) — ignore those.
+      // Status update (delivered/read/sent) — ignore
       return;
     }
 
     const from = message.from; // customer's phone number
-    const text = message.text?.body || "";
 
-    console.log(`Incoming message from ${from}: ${text}`);
+    // Extract text from text message, interactive button, or quick reply
+    let text = "";
+    if (message.type === "text") {
+      text = message.text?.body || "";
+    } else if (message.type === "interactive") {
+      text =
+        message.interactive?.button_reply?.title ||
+        message.interactive?.list_reply?.title ||
+        message.interactive?.list_reply?.id ||
+        "";
+    } else if (message.type === "button") {
+      text = message.button?.text || "";
+    }
 
-const replies = await handleMessage(from, text);
+    console.log(`Incoming message from ${from}: "${text}"`);
+
+    const replies = await handleMessage(from, text);
 
     for (const reply of replies) {
       await sendReply(from, reply);
@@ -83,18 +96,20 @@ const replies = await handleMessage(from, text);
 });
 
 // ---------------------------------------------------------------------
-// Helper: send a single reply, which can be either:
-//   - a plain string -> sent as a text message
-//   - an object { type: "image", path: "/assets/foo.png", caption?: "..." }
-//     -> sent as an image message, using PUBLIC_BASE_URL + path as the link
+// Helper: send a single reply
 // ---------------------------------------------------------------------
 async function sendReply(to, reply) {
   if (typeof reply === "string") {
     return sendWhatsAppText(to, reply);
   }
   if (reply && reply.type === "image") {
-    const imageLink = `${PUBLIC_BASE_URL}${reply.path}`;
-    return sendWhatsAppImage(to, imageLink, reply.caption);
+    const imageLink = reply.url || `${PUBLIC_BASE_URL}${reply.path}`;
+    try {
+      await sendWhatsAppImage(to, imageLink, reply.caption);
+    } catch (e) {
+      console.warn("Failed to send image, falling back:", e.message);
+    }
+    return;
   }
   console.error("Unknown reply type, skipping:", reply);
 }
@@ -103,6 +118,11 @@ async function sendReply(to, reply) {
 // Helper: send a text message via WhatsApp Cloud API
 // ---------------------------------------------------------------------
 async function sendWhatsAppText(to, body) {
+  if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+    console.warn("WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set. Cannot send WhatsApp message.");
+    return;
+  }
+
   try {
     await axios.post(
       GRAPH_API_URL,
@@ -120,15 +140,19 @@ async function sendWhatsAppText(to, body) {
       }
     );
   } catch (err) {
-    console.error("Error sending WhatsApp text message:", err?.response?.data || err.message);
+    console.error("Error sending WhatsApp text message:", JSON.stringify(err?.response?.data || err.message));
   }
 }
 
 // ---------------------------------------------------------------------
-// Helper: send an image message via WhatsApp Cloud API.
-// `link` must be a publicly accessible HTTPS URL to the image.
+// Helper: send an image message via WhatsApp Cloud API
 // ---------------------------------------------------------------------
 async function sendWhatsAppImage(to, link, caption) {
+  if (!WHATSAPP_TOKEN || !WHATSAPP_PHONE_NUMBER_ID) {
+    console.warn("WHATSAPP_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set. Cannot send WhatsApp image.");
+    return;
+  }
+
   try {
     await axios.post(
       GRAPH_API_URL,
@@ -146,7 +170,7 @@ async function sendWhatsAppImage(to, link, caption) {
       }
     );
   } catch (err) {
-    console.error("Error sending WhatsApp image message:", err?.response?.data || err.message);
+    console.error("Error sending WhatsApp image message:", JSON.stringify(err?.response?.data || err.message));
   }
 }
 
