@@ -33,7 +33,8 @@ BUSINESS DETAILS (Always use these exact details):
   * Suit 2-Piece: ₹250 | Suit 3-Piece: ₹300 | Indowestern: ₹300
   * Nehru Jacket: ₹120 | Jacket: ₹150 - ₹180
   * Saree (Normal): ₹150 | Saree (Worked/Heavy/Designer): ₹200
-  * Lehenga: ₹200 | Sherwani: ₹150 - ₹300
+  * Lehenga: Kids (₹150) | Normal / 2Pc (₹200) | 3Pc Medium (₹300) | 3Pc Worked (₹350) | 3Pc Heavy Bridal (₹400) | Lehenga Saree (₹200)
+  * Sherwani: ₹150 - ₹300
   * Blanket Single: ₹200 | Blanket Double: ₹300
   * Quilt/Rajai Single: ₹150 | Quilt Double: ₹250
   * Bed Sheet Single: ₹40 | Bed Sheet Double: ₹60
@@ -43,11 +44,12 @@ BUSINESS DETAILS (Always use these exact details):
 BEHAVIOR AND TONE RULES:
 1. Speak in the same language and style as the customer:
    - If customer asks in Hindi or Bundelkhandi/Hinglish (e.g. "saree dry hone me kitna time lagta hai", "rate kitna hai"), respond in warm, polite, natural Hindi / Hinglish.
-   - If customer asks about HOW MUCH TIME IT TAKES (Turnaround time), explain clearly: 2-3 days normally, or 24 hours for urgent! Do NOT confuse turnaround time with shop opening/closing hours.
+   - If customer asks about HOW MUCH TIME IT TAKES (Turnaround / Processing time), explain clearly: Normal days mein 3 से 4 दिन, wedding season / heavy load mein 4 से 5 दिन! Rare delays for weather/power/machines. Urgent delivery available on direct contact (9151517444). Do NOT confuse turnaround time with shop opening/closing hours.
 2. Keep replies formatted for WhatsApp: concise, easy to read on a mobile phone (2-4 short sentences or clean bullet points), using helpful emojis (✨, 📍, 🕒, 📞, 💰).
-3. If customer is complaining, reports damaged/burnt clothes, or asks for refund:
+3. If customer asks about prices (e.g., "Lehenga dry clean prices on your shop"), ALWAYS respond with the complete pricing details (e.g., Lehenga ranges from ₹150 for kids, ₹200 normal, up to ₹350 worked and ₹400 heavy bridal). NEVER give shop location/address when someone is asking about garment rates or dry cleaning prices!
+4. If customer is complaining, reports damaged/burnt clothes, or asks for refund:
    - Immediately apologize politely and provide the Owner/Manager direct contact: "📞 9151517444 (1st Floor, Shukwari Bazar, Mahoba)" for prompt personal resolution. Never argue.
-4. Sign off naturally with "— आयशा (My Mercury Dry Cleaners)" or "— Aisha 😊".
+5. Sign off naturally with "— आयशा (My Mercury Dry Cleaners)" or "— Aisha 😊".
 `;
 
 async function callGemini(userMessage, apiKey) {
@@ -71,10 +73,12 @@ async function callGemini(userMessage, apiKey) {
             maxOutputTokens: 350
           }
         }),
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(8000)
       });
 
       if (!response.ok) {
+        const errText = await response.text().catch(() => "");
+        console.warn(`Gemini (${model}) error ${response.status}: ${errText.slice(0, 100)}`);
         continue;
       }
 
@@ -84,7 +88,7 @@ async function callGemini(userMessage, apiKey) {
         return reply.trim();
       }
     } catch (err) {
-      // Continue to next model
+      console.warn(`Gemini (${model}) request note:`, err.message);
     }
   }
   return null;
@@ -108,10 +112,12 @@ async function callGroq(userMessage, apiKey) {
         temperature: 0.3,
         max_tokens: 350
       }),
-      signal: AbortSignal.timeout(6000)
+      signal: AbortSignal.timeout(8000)
     });
 
     if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      console.warn(`Groq API error ${response.status}: ${errText.slice(0, 100)}`);
       return null;
     }
 
@@ -121,7 +127,7 @@ async function callGroq(userMessage, apiKey) {
       return reply.trim();
     }
   } catch (err) {
-    // Continue
+    console.warn("Groq API request note:", err.message);
   }
   return null;
 }
