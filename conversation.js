@@ -153,7 +153,8 @@ const STOP_WORDS = new Set([
   "rate", "rates", "price", "prices", "charge", "charges", "kitna", "kitne",
   "cost", "dry", "clean", "dryclean", "cleaning", "wash", "washing", "iron",
   "press", "please", "batao", "bataye", "bataiye", "bhaiya", "sir", "mam",
-  "for", "the", "a", "an", "and", "in", "to", "do", "karo", "karna"
+  "for", "the", "a", "an", "and", "in", "to", "do", "karo", "karna",
+  "shop", "dukan", "dukaan", "on", "your", "aapki", "apki", "humari", "hamari", "at", "of", "is", "are"
 ]);
 
 function normalizeInput(rawText) {
@@ -205,8 +206,20 @@ function searchGarment(rawQuery) {
     }
   }
 
-  matched.sort((a, b) => b.score - a.score);
-  return matched.slice(0, 8);
+  matched.sort((a, b) => b.score - a.score || a.price - b.price);
+
+  // Deduplicate exact same garment name, category, and price
+  const seen = new Set();
+  const unique = [];
+  for (const m of matched) {
+    const key = `${m.garment.toLowerCase().trim()}_${m.category.toLowerCase().trim()}_${m.price}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      unique.push(m);
+    }
+  }
+
+  return unique.slice(0, 15);
 }
 
 function formatMatches(matches) {
@@ -220,12 +233,19 @@ function formatMatches(matches) {
     );
   }
 
-  let text = `💰 *मिलते-जुलते कपड़ों के रेट (${matches.length}):*\n\n`;
+  const validPrices = matches.filter((m) => m.price && m.price > 0).map((m) => m.price);
+  const minPrice = validPrices.length > 0 ? Math.min(...validPrices) : null;
+  const maxPrice = validPrices.length > 0 ? Math.max(...validPrices) : null;
+  const priceRange = (minPrice && maxPrice)
+    ? (minPrice === maxPrice ? `(₹${minPrice})` : `(₹${minPrice} से ₹${maxPrice})`)
+    : "";
+
+  let text = `💰 *ड्राई क्लीनिंग रेट लिस्ट ${priceRange}:*\n\n`;
   matches.forEach((m) => {
     const priceText = m.price && m.price > 0 ? `₹${m.price}` : "संपर्क करें";
     text += `• *${m.garment}* (${m.category}): ${priceText}\n`;
   });
-  text += `\n📞 किसी अन्य कपड़े के रेट के लिए संपर्क करें: ${SHOP_PHONE}`;
+  text += `\n📞 किसी अन्य कपड़े या वैरायटी के रेट के लिए संपर्क करें: *${SHOP_PHONE}*`;
   return text.trim();
 }
 
@@ -234,13 +254,30 @@ function handleLocalRules(phone, text, lower, session) {
   const deliveryWords = [
     "kitna time", "kitne din", "kitna din", "kab tak", "kab milega",
     "ready", "hone me", "hone mein", "lagta hai", "lagega", "lete ho",
-    "lete hain", "delivery time", "tayyar", "kitne ghante"
+    "lete hain", "delivery time", "tayyar", "kitne ghante", "urgent delivery",
+    "tatkal", "turnaround"
   ];
   if (deliveryWords.some((w) => lower.includes(w))) {
     return [DELIVERY_TIME_TEXT, ...menuFooter()];
   }
 
-  // 2. Shop Opening / Closing Timings
+  // 2. Garment Price Search FIRST (so questions like "lehenga prices on your shop" return prices)
+  const matches = searchGarment(text);
+  if (matches.length > 0) {
+    return [formatMatches(matches), ...menuFooter()];
+  }
+
+  // 3. General rate inquiry (without specific garment match)
+  const generalRateTriggers = ["rate", "rates", "price", "prices", "charge", "charges", "cost", "kitna"];
+  if (generalRateTriggers.some((r) => lower.includes(r))) {
+    session.step = "price_menu";
+    return [
+      "हमारे यहाँ सभी प्रकार के कपड़ों की ड्राई क्लीनिंग व स्टीम प्रेसिंग उपलब्ध है।\n\n" +
+      priceCategoryMenuText()
+    ];
+  }
+
+  // 4. Shop Opening / Closing Timings (Must be asking about shop operating hours)
   if (
     lower.includes("timing") || lower.includes("samay") ||
     lower.includes("kab khult") || lower.includes("kab khuleg") || lower.includes("kab band") ||
@@ -250,18 +287,17 @@ function handleLocalRules(phone, text, lower, session) {
     return [SHOP_TIMING_TEXT, ...menuFooter()];
   }
 
-  // Location & Address
-  if (
-    lower.includes("location") || lower.includes("address") || lower.includes("pata") ||
-    lower.includes("kahan") || lower.includes("kaha") || lower.includes("kidhar") ||
-    lower.includes("map") || lower.includes("directions") || lower.includes("rasta") ||
-    lower.includes("dukan") || lower.includes("shop") || lower.includes("bus stand") ||
-    lower.includes("shukwari")
-  ) {
+  // 5. Location & Address (Must be asking for location/address/directions)
+  const locationWords = [
+    "location", "address", "pata", "kahan", "kaha", "kidhar", "map",
+    "directions", "rasta", "kaise aaye", "kaise pahunche"
+  ];
+  const isDirectShopInquiry = lower === "shop" || lower === "dukan" || lower === "dukaan" || lower.includes("bus stand") || lower.includes("shukwari");
+  if (locationWords.some((w) => lower.includes(w)) || isDirectShopInquiry) {
     return [SHOP_LOCATION_TEXT, ...menuFooter()];
   }
 
-  // Pickup & Delivery
+  // 6. Pickup & Delivery
   if (
     lower.includes("pickup") || lower.includes("pick up") || lower.includes("delivery") ||
     lower.includes("ghar se") || lower.includes("home delivery") || lower.includes("doorstep") ||
@@ -270,7 +306,7 @@ function handleLocalRules(phone, text, lower, session) {
     return [PICKUP_DELIVERY_TEXT, ...menuFooter()];
   }
 
-  // General Services
+  // 7. General Services
   if (
     lower === "services" || lower === "service" || lower.includes("kya kya") ||
     lower.includes("facilities") || lower.includes("suvidha") || lower.includes("steam press") ||
@@ -279,24 +315,9 @@ function handleLocalRules(phone, text, lower, session) {
     return [SERVICES_TEXT, ...menuFooter()];
   }
 
-  // Garment Price Search
-  const matches = searchGarment(text);
-  if (matches.length > 0) {
-    return [formatMatches(matches), ...menuFooter()];
-  }
-
-  const generalRateTriggers = ["rate", "rates", "price", "prices", "charge", "charges", "kitna"];
-  if (generalRateTriggers.some((r) => lower.includes(r))) {
-    session.step = "price_menu";
-    return [
-      "हमारे यहाँ सभी प्रकार के कपड़ों की ड्राई क्लीनिंग व स्टीम प्रेसिंग उपलब्ध है।\n\n" +
-      priceCategoryMenuText()
-    ];
-  }
-
   return [
     "क्षमा करें, मुझे यह समझ नहीं आया। 😊\n\n" +
-    "कृपया नीचे दिए गए मेन्यू में से कोई नंबर (1-7) चुनें, या किसी कपड़े का नाम (उदा. *saree*, *blazer*, *blanket*) लिखकर रेट पूछें:",
+    "कृपया नीचे दिए गए मेन्यू में से कोई नंबर (1-7) चुनें, या किसी कपड़े का नाम (उदा. *saree*, *lehenga*, *blazer*, *blanket*) लिखकर रेट पूछें:",
     ...greetingAndMenu()
   ];
 }
