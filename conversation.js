@@ -21,18 +21,18 @@ const SHOP_ADDRESS_FULL =
   "1st Floor, In front of Shukwari Bazar, Near Old Private Bus Stand, Mahoba, Uttar Pradesh - 210427";
 
 const SHOP_TIMING_TEXT =
-  `🕒 *दुकान का समय (Shop Timing)*\n\n` +
+  `🕒 *दुकान का समय (Shop Operating Hours)*\n\n` +
   `• *सोमवार – शनिवार:* सुबह 09:30 AM से रात 08:30 PM\n` +
   `• *रविवार (Sunday):* सुबह 10:00 AM से रात 08:00 PM\n\n` +
   `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
   `📞 *कॉल / पूछताछ:* ${SHOP_PHONE}`;
 
 const DELIVERY_TIME_TEXT =
-  `🕒 *कपड़े तैयार होने का समय (Delivery & Processing Time)*\n\n` +
-  `• *सामान्य दिनों में (Normal Days):* 3 से 4 दिन\n` +
-  `• *शादी के सीज़न / भारी वर्कलोड में:* 4 से 5 दिन (काम के अनुसार)\n\n` +
-  `⚠️ *विशेष सूचना:* खराब मौसम (जैसे बारिश/धूप न होना), बिजली सप्लाई की समस्या या किसी दुर्लभ तकनीकी/मशीनरी खराबी की स्थिति में थोड़ा अतिरिक्त समय (विलंब) लग सकता है।\n\n` +
-  `⚡ *अर्जेंट डिलीवरी:* यदि आपको कपड़े बहुत जल्दी/इमरजेंसी में चाहिए, तो सीधे संपर्क करें: *${SHOP_PHONE}*`;
+  `⏱️ *कपड़े तैयार होने का समय (Delivery & Processing Turnaround)*\n\n` +
+  `• 🌿 *सामान्य दिनों में (Normal Days):* 3 से 4 दिन\n` +
+  `• 👑 *शादी के सीज़न / भारी वर्कलोड में:* 4 से 5 दिन (काम की बारीकी के अनुसार)\n\n` +
+  `⚠️ *संभावित विलंब सूचना:* अत्यधिक बारिश/खराब मौसम (धूप न होने पर कपड़े सुखाने में अतिरिक्त समय), बिजली आपूर्ति में बाधा या मशीनरी के दुर्लभ तकनीकी मेंटेनेंस की स्थिति में थोड़ा अतिरिक्त समय लग सकता है।\n\n` +
+  `⚡ *अर्जेंट डिलीवरी (Emergency Service):* यदि आपको कपड़े बहुत जल्दी चाहिए, तो सीधे संपर्क करें: *${SHOP_PHONE}*`;
 
 const SHOP_LOCATION_TEXT =
   `📍 *हमारा पता (Our Location)*\n\n` +
@@ -41,17 +41,17 @@ const SHOP_LOCATION_TEXT =
   `🏢 *पूरा पता:*\n${SHOP_ADDRESS_FULL}\n` +
   `*(शुक्रवारी बाज़ार के सामने, पुराने प्राइवेट बस स्टैंड के पास)*\n\n` +
   `🗺️ *Google Maps पर लोकेशन देखें:*\n${SHOP_MAPS_URL}\n\n` +
-  `📞 दुकान पर संपर्क करें: ${SHOP_PHONE}`;
+  `📞 *दुकान पर संपर्क करें:* ${SHOP_PHONE}`;
 
 const SERVICES_TEXT =
   `🧺 *हमारी मुख्य सेवाएं (Our Services)*\n\n` +
   `✨ *Professional Dry Cleaning* — कोट, ब्लेज़र, सूट, शेरवानी, पैंट, शर्ट\n` +
-  `✨ *Saree Care & Roll Press* — सिल्क, ज़री, बनारसी व पार्टीवियर साड़ियां\n` +
-  `✨ *Bridal & Wedding Wear* — लहंगा-चोली, दुल्हन के जोड़े व भारी परिधान\n` +
-  `✨ *Winter Care* — कंबल (Single/Double), रजाई, जैकेट, स्वेटर\n` +
-  `✨ *Steam Finishing* — आधुनिक स्टीम प्रेस एवं प्रोफेशनल पैकिंग\n` +
-  `✨ *Doorstep Pickup & Delivery* — महोबा शहर में घर बैठे पिकअप सुविधा\n\n` +
-  `👉 किसी भी कपड़े का रेट जानने के लिए उसका नाम लिखें (उदा. *saree*, *blazer*, *blanket*) या *4* दबाकर पूरी रेट लिस्ट देखें।`;
+  `👗 *Saree Care & Roll Press* — सिल्क, ज़री, बनारसी व पार्टीवियर साड़ियां\n` +
+  `👑 *Bridal & Wedding Wear* — लहंगा-चोली, दुल्हन के जोड़े व भारी परिधान\n` +
+  `🛏️ *Winter Care* — कंबल (Single/Double), रजाई, जैकेट, स्वेटर\n` +
+  `👔 *Steam Finishing* — आधुनिक स्टीम प्रेस एवं प्रोफेशनल पैकिंग\n` +
+  `🚚 *Doorstep Pickup & Delivery* — महोबा शहर में घर बैठे पिकअप सुविधा\n\n` +
+  `👉 किसी भी कपड़े का रेट जानने के लिए उसका नाम लिखें (उदा. *saree*, *lehenga*, *blazer*, *blanket*) या *4* दबाकर पूरी रेट लिस्ट देखें।`;
 
 const PICKUP_DELIVERY_TEXT =
   `🚚 *होम पिकअप व डिलीवरी (Doorstep Pickup & Delivery)*\n\n` +
@@ -63,10 +63,23 @@ const PICKUP_DELIVERY_TEXT =
 
 const ESCALATION_TEXT =
   `🙏 *ग्राहक सहायता (Customer Support / Manager Desk)*\n\n` +
-  `आपकी संतुष्टि ही हमारी सर्वोच्च प्राथमिकता है। किसी भी शिकायत, विशेष अनुरोध या जरूरी बात के लिए हमारे ओनर/मैनेजर से सीधे संपर्क करें:\n\n` +
+  `आपकी संतुष्टि ही हमारी सर्वोच्च प्राथमिकता है। किसी भी शिकायत, विशेष अनुरोध या सहायता के लिए हमारे मैनेजर डेस्क से सीधे संपर्क करें:\n\n` +
   `📞 कॉल / WhatsApp: *${SHOP_PHONE}*\n` +
-  `📍 1st Floor, शुकwari Bazar, Mahoba\n\n` +
+  `📍 1st Floor, In front of Shukwari Bazar, Mahoba\n\n` +
   `हम तुरंत आपकी समस्या का उचित समाधान करेंगे।`;
+
+const CLOSING_TEXT =
+  `🙏✨ *My Mercury Dry Cleaners चुनने के लिए आपका हृदय से धन्यवाद!*\n\n` +
+  `यदि आपको कपड़ों की ड्राई क्लीनिंग, स्टीम प्रेसिंग या होम पिकअप से संबंधित कोई अन्य सहायता चाहिए, तो हम सदैव आपकी सेवा में उपलब्ध हैं।\n\n` +
+  `🌸 *आपका दिन शुभ और मंगलमय हो!* — आयशा (Aisha) 😊`;
+
+const CLOSING_TRIGGERS = [
+  "thank you", "thanks", "dhanyawad", "dhanyavad", "shukriya",
+  "ok", "okay", "theek hai", "thik hai", "thik h", "accha", "achha", "achha h",
+  "samajh gaya", "samajh gya", "samajh gye", "done", "got it", "bye", "alvida",
+  "badhiya", "bahut achha", "bahut badhiya", "kripya", "shukran", "no thanks",
+  "ok thanks", "theek hai thanks", "thik hai ji", "ok ji", "theek h ji"
+];
 
 // Load Dry Cleaning price list
 let PRICE_DATA = {};
@@ -222,14 +235,31 @@ function searchGarment(rawQuery) {
   return unique.slice(0, 15);
 }
 
+function getGarmentEmoji(garmentName, category) {
+  const g = (garmentName || "").toLowerCase();
+  const c = (category || "").toLowerCase();
+  if (g.includes("lehenga") || g.includes("saree") || g.includes("gown") || g.includes("anarkali") || g.includes("dupatta") || c === "women") {
+    return "👗";
+  }
+  if (g.includes("blazer") || g.includes("coat") || g.includes("suit") || g.includes("sherwani") || g.includes("jacket") || g.includes("safari") || c === "men") {
+    return "👔";
+  }
+  if (g.includes("blanket") || g.includes("kambal") || g.includes("quilt") || g.includes("rajai") || g.includes("sheet") || g.includes("curtain") || c === "household") {
+    return "🛏️";
+  }
+  return "🏷️";
+}
+
 function formatMatches(matches) {
+  const firstEmoji = getGarmentEmoji(matches[0]?.garment, matches[0]?.category);
   if (matches.length === 1) {
     const m = matches[0];
     const priceText = m.price && m.price > 0 ? `₹${m.price}` : "रेट के लिए संपर्क करें";
     return (
-      `💰 *रेट विवरण (Price Details):*\n\n` +
-      `• *${m.garment}* (${m.category}): ${priceText}\n\n` +
-      `📍 ${SHOP_NAME}, Mahoba | 📞 ${SHOP_PHONE}`
+      `${firstEmoji} *रेट विवरण (Price Details):*\n\n` +
+      `• *${m.garment}* (${m.category}): *${priceText}*\n\n` +
+      `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
+      `📞 *बुकिंग व संपर्क:* ${SHOP_PHONE}`
     );
   }
 
@@ -240,12 +270,13 @@ function formatMatches(matches) {
     ? (minPrice === maxPrice ? `(₹${minPrice})` : `(₹${minPrice} से ₹${maxPrice})`)
     : "";
 
-  let text = `💰 *ड्राई क्लीनिंग रेट लिस्ट ${priceRange}:*\n\n`;
+  let text = `${firstEmoji}✨ *ड्राई क्लीनिंग रेट लिस्ट ${priceRange}:*\n\n`;
   matches.forEach((m) => {
+    const emoji = getGarmentEmoji(m.garment, m.category);
     const priceText = m.price && m.price > 0 ? `₹${m.price}` : "संपर्क करें";
-    text += `• *${m.garment}* (${m.category}): ${priceText}\n`;
+    text += `${emoji} *${m.garment}* (${m.category}): *${priceText}*\n`;
   });
-  text += `\n📞 किसी अन्य कपड़े या वैरायटी के रेट के लिए संपर्क करें: *${SHOP_PHONE}*`;
+  text += `\n📞 *दुकान पर संपर्क या होम पिकअप:* *${SHOP_PHONE}*`;
   return text.trim();
 }
 
@@ -253,9 +284,8 @@ function handleLocalRules(phone, text, lower, session) {
   // 1. Delivery & Processing Turnaround Time (kitna time lagta hai / kab milega)
   const deliveryWords = [
     "kitna time", "kitne din", "kitna din", "kab tak", "kab milega",
-    "ready", "hone me", "hone mein", "lagta hai", "lagega", "lete ho",
-    "lete hain", "delivery time", "tayyar", "kitne ghante", "urgent delivery",
-    "tatkal", "turnaround"
+    "delivery time", "kitne ghante", "urgent delivery", "tatkal", "turnaround",
+    "ready kab", "kab ready", "kitna samay", "samay lagega", "time lagta", "time lagega"
   ];
   if (deliveryWords.some((w) => lower.includes(w))) {
     return [DELIVERY_TIME_TEXT, ...menuFooter()];
@@ -341,7 +371,22 @@ async function handleMessage(phone, rawText) {
     return [ESCALATION_TEXT, ...menuFooter()];
   }
 
-  // 2. Exact numbered menu choices
+  // 2. Customer Satisfaction / Wrap-up / Thank You
+  if (
+    CLOSING_TRIGGERS.includes(lower) ||
+    lower === "ok thanks" ||
+    lower === "ok thank you" ||
+    lower === "theek hai thanks" ||
+    lower === "thik h bhaiya" ||
+    lower === "thik hai bhaiya" ||
+    lower.startsWith("thank") ||
+    lower.startsWith("dhanya")
+  ) {
+    resetSession(phone);
+    return [CLOSING_TEXT];
+  }
+
+  // 3. Exact numbered menu choices
   if (text === "1") return [SHOP_TIMING_TEXT, ...menuFooter()];
   if (text === "2") return [SHOP_LOCATION_TEXT, ...menuFooter()];
   if (text === "3") return [SERVICES_TEXT, ...menuFooter()];
@@ -424,16 +469,16 @@ function menuFooter() {
 
 function greetingAndMenu() {
   return [
-    `👋 नमस्ते! मैं *आयशा (Aisha)* हूँ — आपकी डिजिटल असिस्टेंट at *${SHOP_NAME}*, Mahoba (Since 1980).\n\n` +
-    `हम आपकी किस प्रकार सहायता कर सकते हैं? कृपया किसी विकल्प का नंबर रिप्लाई करें:\n\n` +
-    `1️⃣ 🕒 दुकान का समय (Shop Timing)\n` +
+    `🙏 नमस्ते! आपका स्वागत है *${SHOP_NAME}*, Mahoba (Since 1980 — 46+ वर्षों का अटूट विश्वास ✨) में।\n\n` +
+    `मैं आपकी डिजिटल असिस्टेंट *आयशा (Aisha)* हूँ। बताइए, आज मैं आपकी क्या सहायता कर सकती हूँ?\n\n` +
+    `1️⃣ 🕒 दुकान का समय (Shop Timings)\n` +
     `2️⃣ 📍 दुकान का पता व मैप (Location & Map)\n` +
     `3️⃣ 🧺 हमारी सेवाएं (Our Services)\n` +
     `4️⃣ 💰 रेट लिस्ट (Price List)\n` +
-    `5️⃣ 🚚 होम पिकअप व डिलीवरी (Pickup & Delivery)\n` +
-    `6️⃣ 📦 आर्डर का स्टेटस (Check Order Status)\n` +
-    `7️⃣ 📞 ओनर से बात करें (Contact Owner / Manager)\n\n` +
-    `💡 *सुझाव:* आप सीधे किसी कपड़े का नाम (उदा. *"saree"*, *"blazer"*, *"kambal"*) या अपना कोई भी सवाल पूछ सकते हैं!`
+    `5️⃣ 🚚 होम पिकअप व डिलीवरी (Doorstep Pickup)\n` +
+    `6️⃣ 📦 आर्डर स्टेटस (Check Order Status)\n` +
+    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n\n` +
+    `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या अपना कोई भी सवाल पूछ सकते हैं!`
   ];
 }
 
