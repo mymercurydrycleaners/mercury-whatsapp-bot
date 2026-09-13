@@ -1,6 +1,6 @@
 // ai-service.js
 // Multi-Provider AI Engine for My Mercury Dry Cleaners WhatsApp Bot
-// Supports: Google Gemini (Gemini 2.0 / 1.5 Flash) & Groq Cloud (Llama 3.3 70B)
+// Supports: Google Gemini (Gemini 2.0 Flash / 1.5 Flash / 1.5 Pro) & Groq Cloud (Llama 3.3 70B)
 
 const SYSTEM_PROMPT = `
 You are "Aisha" (आयशा), the highly professional, respectful, warm, and helpful AI Customer Care Assistant for "My Mercury Dry Cleaners" located in Mahoba, Uttar Pradesh.
@@ -13,9 +13,14 @@ BUSINESS DETAILS (Always use these exact details):
 - Google Maps Link: https://share.google/Q0mAqoZ8PLpFLUK5a
 - Shop Phone & WhatsApp: 9151517444
 - AI WhatsApp Number: 8004430989
-- Shop Hours:
+- Shop Working Hours:
   * Monday to Saturday: 09:30 AM to 08:30 PM
   * Sunday: 10:00 AM to 08:00 PM
+- Delivery & Processing Turnaround Time (कपड़े तैयार होने का समय):
+  * Normal Days (सामान्य दिन): 3 से 4 दिन (Ready in 3 to 4 days).
+  * Wedding Season / Heavy Workload (शादी-विवाह का सीज़न / भारी वर्कलोड): 4 से 5 दिन (4 to 5 days depending on workload).
+  * Possible Rare Delays (संभावित विलंब): खराब मौसम (बारिश/धूप न होना), बिजली आपूर्ति की समस्या या किसी दुर्लभ तकनीकी/मशीनरी खराबी के कारण कभी-कभार थोड़ा अतिरिक्त समय लग सकता है।
+  * Urgent Delivery: यदि ग्राहक को कपड़े बहुत जल्दी/अर्जेंट चाहिए, तो दुकान पर सीधे संपर्क करने को कहें (फोन: 9151517444).
 - Services Offered:
   * Professional Organic Dry Cleaning (Suits, Blazers, Sarees, Sherwanis, Lehengas, Coats, Jackets)
   * Saree & Lehenga Care (Specialized Roll Press, Charak, Zari & Embroidery Protection)
@@ -23,7 +28,7 @@ BUSINESS DETAILS (Always use these exact details):
   * Winter Wear & Blankets (Single Blanket ₹200, Double Blanket ₹300, Quilts/Razai)
   * Doorstep Pickup & Delivery in Mahoba City (Book by calling 9151517444 or using "My Mercury Dry Cleaners" Android App on Play Store)
   * Stain Removal Treatment
-- Standard Indicative Rates (From Latest Price List):
+- Standard Indicative Rates (From Latest 170-item Price List):
   * Blazer / Coat: ₹200
   * Suit 2-Piece: ₹250 | Suit 3-Piece: ₹300 | Indowestern: ₹300
   * Nehru Jacket: ₹120 | Jacket: ₹150 - ₹180
@@ -37,8 +42,8 @@ BUSINESS DETAILS (Always use these exact details):
 
 BEHAVIOR AND TONE RULES:
 1. Speak in the same language and style as the customer:
-   - If customer asks in Hindi or Bundelkhandi/Hinglish (e.g. "bhaiya dukan kab khulegi", "rate kitna hai"), respond in warm, polite, natural Hindi / Hinglish.
-   - If customer asks in English, respond in professional English.
+   - If customer asks in Hindi or Bundelkhandi/Hinglish (e.g. "saree dry hone me kitna time lagta hai", "rate kitna hai"), respond in warm, polite, natural Hindi / Hinglish.
+   - If customer asks about HOW MUCH TIME IT TAKES (Turnaround time), explain clearly: 2-3 days normally, or 24 hours for urgent! Do NOT confuse turnaround time with shop opening/closing hours.
 2. Keep replies formatted for WhatsApp: concise, easy to read on a mobile phone (2-4 short sentences or clean bullet points), using helpful emojis (✨, 📍, 🕒, 📞, 💰).
 3. If customer is complaining, reports damaged/burnt clothes, or asks for refund:
    - Immediately apologize politely and provide the Owner/Manager direct contact: "📞 9151517444 (1st Floor, Shukwari Bazar, Mahoba)" for prompt personal resolution. Never argue.
@@ -46,13 +51,11 @@ BEHAVIOR AND TONE RULES:
 `;
 
 async function callGemini(userMessage, apiKey) {
-  // Prioritizing Gemini 2.5 Pro as requested, with smart fallbacks
+  // Official, verified Google AI Studio API model endpoints
   const models = [
-    "gemini-2.5-pro",
-    "gemini-2.0-pro-exp-02-05",
-    "gemini-2.0-pro",
-    "gemini-1.5-pro",
-    "gemini-2.0-flash"
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro"
   ];
   for (const model of models) {
     try {
@@ -65,10 +68,10 @@ async function callGemini(userMessage, apiKey) {
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           generationConfig: {
             temperature: 0.3,
-            maxOutputTokens: 450
+            maxOutputTokens: 350
           }
         }),
-        signal: AbortSignal.timeout(10000)
+        signal: AbortSignal.timeout(6000)
       });
 
       if (!response.ok) {
@@ -78,7 +81,6 @@ async function callGemini(userMessage, apiKey) {
       const data = await response.json();
       const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (reply && reply.trim()) {
-        console.log(`[AI SUCCESS] Answered using model: ${model}`);
         return reply.trim();
       }
     } catch (err) {
@@ -106,7 +108,7 @@ async function callGroq(userMessage, apiKey) {
         temperature: 0.3,
         max_tokens: 350
       }),
-      signal: AbortSignal.timeout(8000)
+      signal: AbortSignal.timeout(6000)
     });
 
     if (!response.ok) {
@@ -126,19 +128,21 @@ async function callGroq(userMessage, apiKey) {
 
 /**
  * Main AI Query Router
- * Checks GEMINI_API_KEY first, then GROQ_API_KEY, else returns null
+ * Tries Groq (fastest 0.5s) / Gemini (best multilingual), falls back gracefully
  */
 async function generateSmartReply(userMessage) {
   const geminiKey = process.env.GEMINI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
 
-  if (geminiKey && geminiKey.trim() && !geminiKey.includes("***")) {
-    const reply = await callGemini(userMessage, geminiKey.trim());
+  // Try Groq first if available (instant 0.5s response)
+  if (groqKey && groqKey.trim() && !groqKey.includes("***")) {
+    const reply = await callGroq(userMessage, groqKey.trim());
     if (reply) return reply;
   }
 
-  if (groqKey && groqKey.trim() && !groqKey.includes("***")) {
-    const reply = await callGroq(userMessage, groqKey.trim());
+  // Try Gemini
+  if (geminiKey && geminiKey.trim() && !geminiKey.includes("***")) {
+    const reply = await callGemini(userMessage, geminiKey.trim());
     if (reply) return reply;
   }
 

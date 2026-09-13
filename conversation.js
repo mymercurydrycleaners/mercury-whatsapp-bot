@@ -27,6 +27,13 @@ const SHOP_TIMING_TEXT =
   `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
   `📞 *कॉल / पूछताछ:* ${SHOP_PHONE}`;
 
+const DELIVERY_TIME_TEXT =
+  `🕒 *कपड़े तैयार होने का समय (Delivery & Processing Time)*\n\n` +
+  `• *सामान्य दिनों में (Normal Days):* 3 से 4 दिन\n` +
+  `• *शादी के सीज़न / भारी वर्कलोड में:* 4 से 5 दिन (काम के अनुसार)\n\n` +
+  `⚠️ *विशेष सूचना:* खराब मौसम (जैसे बारिश/धूप न होना), बिजली सप्लाई की समस्या या किसी दुर्लभ तकनीकी/मशीनरी खराबी की स्थिति में थोड़ा अतिरिक्त समय (विलंब) लग सकता है।\n\n` +
+  `⚡ *अर्जेंट डिलीवरी:* यदि आपको कपड़े बहुत जल्दी/इमरजेंसी में चाहिए, तो सीधे संपर्क करें: *${SHOP_PHONE}*`;
+
 const SHOP_LOCATION_TEXT =
   `📍 *हमारा पता (Our Location)*\n\n` +
   `*${SHOP_NAME}* (Since 1980)\n` +
@@ -223,12 +230,22 @@ function formatMatches(matches) {
 }
 
 function handleLocalRules(phone, text, lower, session) {
-  // Timings
+  // 1. Delivery & Processing Turnaround Time (kitna time lagta hai / kab milega)
+  const deliveryWords = [
+    "kitna time", "kitne din", "kitna din", "kab tak", "kab milega",
+    "ready", "hone me", "hone mein", "lagta hai", "lagega", "lete ho",
+    "lete hain", "delivery time", "tayyar", "kitne ghante"
+  ];
+  if (deliveryWords.some((w) => lower.includes(w))) {
+    return [DELIVERY_TIME_TEXT, ...menuFooter()];
+  }
+
+  // 2. Shop Opening / Closing Timings
   if (
-    lower.includes("timing") || lower.includes("time") || lower.includes("samay") ||
+    lower.includes("timing") || lower.includes("samay") ||
     lower.includes("kab khult") || lower.includes("kab khuleg") || lower.includes("kab band") ||
     lower.includes("khula hai") || lower.includes("kholte") || lower.includes("aaj open") ||
-    lower.includes("hours") || lower.includes("chhutti")
+    lower.includes("chhutti") || lower.includes("working hour") || lower.includes("opening")
   ) {
     return [SHOP_TIMING_TEXT, ...menuFooter()];
   }
