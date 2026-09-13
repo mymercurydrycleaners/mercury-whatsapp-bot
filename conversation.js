@@ -16,9 +16,9 @@ const SHOP_NAME = "My Mercury Dry Cleaners";
 const SHOP_PHONE = "9151517444";
 const AI_PHONE = "8004430989";
 const SHOP_MAPS_URL = "https://share.google/Q0mAqoZ8PLpFLUK5a";
-const SHOP_ADDRESS_SHORT = "1st Floor, Shukwari Bazar, Mahoba";
+const SHOP_ADDRESS_SHORT = "1st Floor, In front of Shukwari Bazar, Mahoba";
 const SHOP_ADDRESS_FULL =
-  "1st Floor, Shukwari Bazar, Makaniya Purva, Near Old Private Bus Stand, Mahoba, Uttar Pradesh - 210427";
+  "1st Floor, In front of Shukwari Bazar, Near Old Private Bus Stand, Mahoba, Uttar Pradesh - 210427";
 
 const SHOP_TIMING_TEXT =
   `🕒 *दुकान का समय (Shop Timing)*\n\n` +
@@ -39,7 +39,7 @@ const SHOP_LOCATION_TEXT =
   `*${SHOP_NAME}* (Since 1980)\n` +
   `46+ वर्षों का अटूट विश्वास ✨\n\n` +
   `🏢 *पूरा पता:*\n${SHOP_ADDRESS_FULL}\n` +
-  `*(पुराने प्राइवेट बस स्टैंड के पास)*\n\n` +
+  `*(शुक्रवारी बाज़ार के सामने, पुराने प्राइवेट बस स्टैंड के पास)*\n\n` +
   `🗺️ *Google Maps पर लोकेशन देखें:*\n${SHOP_MAPS_URL}\n\n` +
   `📞 दुकान पर संपर्क करें: ${SHOP_PHONE}`;
 
