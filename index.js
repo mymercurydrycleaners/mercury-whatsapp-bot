@@ -69,10 +69,26 @@ app.post("/webhook", async (req, res) => {
 
     const from = message.from; // customer's phone number
 
-    // Extract text from text message, interactive button, or quick reply
+    // Extract text from text message, interactive button, quick reply, or audio voice note
     let text = "";
+    let isVoiceMessage = false;
+
     if (message.type === "text") {
       text = message.text?.body || "";
+    } else if (message.type === "audio") {
+      isVoiceMessage = true;
+      const audioId = message.audio?.id;
+      if (audioId) {
+        console.log(`Received WhatsApp voice note from ${from} (Media ID: ${audioId}), transcribing...`);
+        text = await transcribeWhatsAppAudio(audioId);
+      }
+      if (!text) {
+        await sendWhatsAppText(
+          from,
+          "🙏 नमस्ते! मुझे आपका वॉइस मैसेज मिला, लेकिन तकनीकी कारण से आवाज़ स्पष्ट सुनाई नहीं दी।\n\nकृपया अपना सवाल लिखकर भेजें या सीधे हमारे मैनेजर डेस्क पर कॉल करें: 📞 *9151517444*"
+        );
+        return;
+      }
     } else if (message.type === "interactive") {
       text =
         message.interactive?.button_reply?.title ||
@@ -83,17 +99,74 @@ app.post("/webhook", async (req, res) => {
       text = message.button?.text || "";
     }
 
-    console.log(`Incoming message from ${from}: "${text}"`);
+    console.log(`Incoming message from ${from}: "${text}" (Voice: ${isVoiceMessage})`);
 
     const replies = await handleMessage(from, text);
 
-    for (const reply of replies) {
+    for (let i = 0; i < replies.length; i++) {
+      let reply = replies[i];
+      if (isVoiceMessage && i === 0 && typeof reply === "string") {
+        reply = `🎤 *[आपने पूछा:]* "${text}"\n\n` + reply;
+      }
       await sendReply(from, reply);
     }
   } catch (err) {
     console.error("Error handling webhook event:", err?.response?.data || err.message);
   }
 });
+
+// ---------------------------------------------------------------------
+// Voice Note Transcription via Groq Whisper API (100% Free & Fast)
+// ---------------------------------------------------------------------
+async function transcribeWhatsAppAudio(audioId) {
+  try {
+    const groqKey = process.env.GROQ_API_KEY;
+    if (!groqKey || !groqKey.trim() || groqKey.includes("***")) {
+      console.warn("GROQ_API_KEY is not configured for voice transcription.");
+      return null;
+    }
+
+    // 1. Get media URL from Meta Graph API
+    const mediaRes = await axios.get(`https://graph.facebook.com/v20.0/${audioId}`, {
+      headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}` }
+    });
+    const mediaUrl = mediaRes.data?.url;
+    if (!mediaUrl) return null;
+
+    // 2. Download audio binary from Meta
+    const audioRes = await axios.get(mediaUrl, {
+      headers: { Authorization: `Bearer ${WHATSAPP_TOKEN}` },
+      responseType: "arraybuffer"
+    });
+    const audioBuffer = Buffer.from(audioRes.data);
+
+    // 3. Send audio to Groq Whisper v3
+    const formData = new FormData();
+    const blob = new Blob([audioBuffer], { type: "audio/ogg" });
+    formData.append("file", blob, "voice.ogg");
+    formData.append("model", "whisper-large-v3");
+    formData.append("temperature", "0");
+
+    const whisperRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${groqKey.trim()}` },
+      body: formData,
+      signal: AbortSignal.timeout(10000)
+    });
+
+    if (!whisperRes.ok) {
+      const errTxt = await whisperRes.text().catch(() => "");
+      console.error("Groq Whisper transcription error:", whisperRes.status, errTxt);
+      return null;
+    }
+
+    const whisperData = await whisperRes.json();
+    return whisperData.text?.trim() || null;
+  } catch (err) {
+    console.error("Audio transcription failed:", err.message);
+    return null;
+  }
+}
 
 // ---------------------------------------------------------------------
 // Helper: send a single reply
