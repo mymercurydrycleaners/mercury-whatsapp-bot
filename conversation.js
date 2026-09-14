@@ -90,7 +90,55 @@ try {
   console.error("Error loading prices.json:", e.message);
   PRICE_DATA = { Men: [], Women: [], Kids: [], Household: [], Institutional: [], Others: [] };
 }
-const CATEGORY_KEYS = Object.keys(PRICE_DATA);
+
+const ORDERED_CATEGORIES = [
+  {
+    key: "Women",
+    icon: "👗",
+    label: "👗 महिलाएं व ब्राइडल (Women — साड़ी, लहंगा, सूट, गाउन)",
+    synonyms: ["women", "woman", "ladies", "lady", "mahila", "aurat", "female", "sadi", "saree", "lehenga", "bridal", "anarkali", "blouse", "kurti"]
+  },
+  {
+    key: "Men",
+    icon: "👔",
+    label: "👔 पुरुष (Men — कोट, ब्लेज़र, सूट, शेरवानी, पैंट)",
+    synonyms: ["men", "man", "gents", "gent", "purush", "male", "blazer", "coat", "suit", "sherwani", "kurta", "safari"]
+  },
+  {
+    key: "Kids",
+    icon: "👶",
+    label: "👶 बच्चे (Kids — फ्रॉक, कोट, शेरवानी, लहंगे)",
+    synonyms: ["kids", "kid", "bachhe", "bacha", "children", "child", "boy", "girl"]
+  },
+  {
+    key: "Household",
+    icon: "🛏️",
+    label: "🛏️ घरेलू व विंटर (Household — कंबल, रज़ाई, चादर, पर्दे)",
+    synonyms: ["household", "home", "gharelu", "kambal", "blanket", "quilt", "rajai", "curtain", "bedsheet"]
+  },
+  {
+    key: "Institutional",
+    icon: "🏥",
+    label: "🏥 अन्य / इंस्टीट्यूशनल (Institutional — डॉक्टर कोट, वर्दी)",
+    synonyms: ["institutional", "doctor", "uniform", "hospital", "hotel", "other", "others"]
+  }
+];
+
+const CATEGORY_KEYS = ORDERED_CATEGORIES.map((c) => c.key);
+
+function findCategory(input) {
+  if (!input) return null;
+  const clean = input.toLowerCase().trim();
+  const num = parseInt(clean, 10);
+  if (!isNaN(num) && num >= 1 && num <= ORDERED_CATEGORIES.length) {
+    return ORDERED_CATEGORIES[num - 1].key;
+  }
+  for (const cat of ORDERED_CATEGORIES) {
+    if (cat.key.toLowerCase() === clean) return cat.key;
+    if (cat.synonyms.some((s) => clean === s || clean.includes(s))) return cat.key;
+  }
+  return null;
+}
 
 const ORDER_STATUS_LOOKUP = {};
 
@@ -345,6 +393,14 @@ function handleLocalRules(phone, text, lower, session) {
     return [SERVICES_TEXT, ...menuFooter()];
   }
 
+  // 8. Direct Category Inquiry (e.g. user types "women", "ladies", "men", "kids", "kambal")
+  const directCat = findCategory(text);
+  if (directCat) {
+    const listResult = categoryPriceListText(directCat);
+    const listMessages = Array.isArray(listResult) ? listResult : [listResult];
+    return [...listMessages, ...menuFooter()];
+  }
+
   return [
     "क्षमा करें, मुझे यह समझ नहीं आया। 😊\n\n" +
     "कृपया नीचे दिए गए मेन्यू में से कोई नंबर (1-7) चुनें, या किसी कपड़े का नाम (उदा. *saree*, *lehenga*, *blazer*, *blanket*) लिखकर रेट पूछें:",
@@ -386,25 +442,7 @@ async function handleMessage(phone, rawText) {
     return [CLOSING_TEXT];
   }
 
-  // 3. Exact numbered menu choices
-  if (text === "1") return [SHOP_TIMING_TEXT, ...menuFooter()];
-  if (text === "2") return [SHOP_LOCATION_TEXT, ...menuFooter()];
-  if (text === "3") return [SERVICES_TEXT, ...menuFooter()];
-  if (text === "4") {
-    session.step = "price_menu";
-    return [priceCategoryMenuText()];
-  }
-  if (text === "5") return [PICKUP_DELIVERY_TEXT, ...menuFooter()];
-  if (text === "6") {
-    session.step = "awaiting_order_number";
-    return [
-      "📦 *आर्डर स्टेटस चेक (Order Status)*\n\n" +
-      "कृपया अपना *Order Number* या *Bill Number* टाइप करके भेजें (उदा. ORD101 या 1052):"
-    ];
-  }
-  if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
-
-  // 3. Greetings & Menu triggers
+  // 3. Greetings & Menu triggers (Always resets to main menu)
   const greetingTriggers = [
     "hi", "hello", "hey", "hlo", "namaste", "namaskar", "pranam",
     "radhe radhe", "ram ram", "start", "menu", "help", "madad",
@@ -415,7 +453,17 @@ async function handleMessage(phone, rawText) {
     return greetingAndMenu();
   }
 
-  // 4. Sub-step handling
+  // 4. Active Sub-Step Handling (Must run before top-level numbered choices)
+  if (session.step === "price_menu") {
+    const matchedCategory = findCategory(text);
+    if (matchedCategory) {
+      session.step = "menu";
+      const listResult = categoryPriceListText(matchedCategory);
+      const listMessages = Array.isArray(listResult) ? listResult : [listResult];
+      return [...listMessages, ...menuFooter()];
+    }
+  }
+
   if (session.step === "awaiting_order_number") {
     const orderNumber = text.toUpperCase();
     const status = ORDER_STATUS_LOOKUP[orderNumber];
@@ -435,16 +483,23 @@ async function handleMessage(phone, rawText) {
     ];
   }
 
-  if (session.step === "price_menu") {
-    const categoryIndex = parseInt(text, 10);
-    if (!isNaN(categoryIndex) && categoryIndex >= 1 && categoryIndex <= CATEGORY_KEYS.length) {
-      const category = CATEGORY_KEYS[categoryIndex - 1];
-      session.step = "menu";
-      const listResult = categoryPriceListText(category);
-      const listMessages = Array.isArray(listResult) ? listResult : [listResult];
-      return [...listMessages, ...menuFooter()];
-    }
+  // 5. Main Numbered Menu Choices (1-7)
+  if (text === "1") return [SHOP_TIMING_TEXT, ...menuFooter()];
+  if (text === "2") return [SHOP_LOCATION_TEXT, ...menuFooter()];
+  if (text === "3") return [SERVICES_TEXT, ...menuFooter()];
+  if (text === "4") {
+    session.step = "price_menu";
+    return [priceCategoryMenuText()];
   }
+  if (text === "5") return [PICKUP_DELIVERY_TEXT, ...menuFooter()];
+  if (text === "6") {
+    session.step = "awaiting_order_number";
+    return [
+      "📦 *आर्डर स्टेटस चेक (Order Status)*\n\n" +
+      "कृपया अपना *Order Number* या *Bill Number* टाइप करके भेजें (उदा. ORD101 या 1052):"
+    ];
+  }
+  if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
 
   // 5. Intelligent AI Response (Gemini 2.0 Flash / Groq Llama 3.3)
   try {
@@ -483,24 +538,27 @@ function greetingAndMenu() {
 }
 
 function priceCategoryMenuText() {
-  let text = "💰 *रेट लिस्ट — Dry Cleaning Price List*\n\nकैटेगरी देखने के लिए नंबर चुनें:\n\n";
-  CATEGORY_KEYS.forEach((cat, i) => {
-    text += `${i + 1}️⃣ ${cat}\n`;
+  let text = "💰 *रेट लिस्ट — Dry Cleaning Price List*\n\nकैटेगरी देखने के लिए नंबर (1-5) या नाम चुनें:\n\n";
+  ORDERED_CATEGORIES.forEach((cat, i) => {
+    text += `${i + 1}️⃣ ${cat.label}\n`;
   });
-  text += "\nया सीधे किसी कपड़े का नाम टाइप करें (उदा. *saree*, *blazer*, *suit*, *blanket*).";
+  text += "\n💡 *या सीधे किसी कपड़े का नाम टाइप करें* (उदा. *saree*, *lehenga*, *blazer*, *blanket*).";
   return text;
 }
 
 function categoryPriceListText(category) {
   const items = PRICE_DATA[category] || [];
+  const catObj = ORDERED_CATEGORIES.find((c) => c.key === category);
+  const icon = catObj ? catObj.icon : "🏷️";
+  const label = catObj ? catObj.label : category;
   const MAX_ITEMS_PER_MESSAGE = 25;
   const lines = items.map((item) => {
     const priceText = item.price && item.price > 0 ? `₹${item.price}` : "संपर्क करें";
-    return `• ${item.garment}: ${priceText}`;
+    return `${icon} *${item.garment}*: *${priceText}*`;
   });
 
   if (lines.length <= MAX_ITEMS_PER_MESSAGE) {
-    return `💰 *${category} — Dry Cleaning Prices*\n\n${lines.join("\n")}`;
+    return `💰 *${label} — रेट लिस्ट*\n\n${lines.join("\n")}\n\n📞 *दुकान पर संपर्क या होम पिकअप:* *${SHOP_PHONE}*`;
   }
 
   const chunks = [];
@@ -508,8 +566,8 @@ function categoryPriceListText(category) {
     chunks.push(lines.slice(i, i + MAX_ITEMS_PER_MESSAGE));
   }
   return chunks.map((chunk, idx) => {
-    const header = `💰 *${category} — Dry Cleaning Prices* (${idx + 1}/${chunks.length})`;
-    return `${header}\n\n${chunk.join("\n")}`;
+    const header = `💰 *${label} — रेट लिस्ट* (${idx + 1}/${chunks.length})`;
+    return `${header}\n\n${chunk.join("\n")}\n\n📞 *दुकान पर संपर्क या होम पिकअप:* *${SHOP_PHONE}*`;
   });
 }
 
