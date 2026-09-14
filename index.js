@@ -145,6 +145,8 @@ async function transcribeWhatsAppAudio(audioId) {
     const blob = new Blob([audioBuffer], { type: "audio/ogg" });
     formData.append("file", blob, "voice.ogg");
     formData.append("model", "whisper-large-v3");
+    formData.append("language", "hi"); // Strictly Hindi (Devanagari script) - NEVER Urdu
+    formData.append("prompt", "My Mercury Dry Cleaners, Mahoba. Hindi voice note: dry cleaning, saree, blazer, coat, suit, lehenga, rate, price, kambal, delivery.");
     formData.append("temperature", "0");
 
     const whisperRes = await fetch("https://api.groq.com/openai/v1/audio/transcriptions", {
