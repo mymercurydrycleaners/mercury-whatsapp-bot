@@ -401,22 +401,6 @@ function handleLocalRules(phone, text, lower, session) {
     return [...listMessages, ...menuFooter()];
   }
 
-  // 9. Compliments & Aisha Persona (e.g. "aapka naam bahut achha hai", "nice name", "kaise ho", "who are you")
-  if (
-    (lower.includes("naam") && (lower.includes("achha") || lower.includes("accha") || lower.includes("pyara") || lower.includes("nice") || lower.includes("sundar") || lower.includes("badiya"))) ||
-    lower.includes("nice name") || lower.includes("good name") || lower.includes("sweet name") ||
-    lower.includes("kaise ho") || lower.includes("kaisi ho") || lower.includes("kya hal") ||
-    lower.includes("who are you") || lower.includes("kaun ho") || lower.includes("kya karti ho")
-  ) {
-    return [
-      "बहुत-बहुत धन्यवाद! 😊 आपकी यह प्यारी बात सुनकर बहुत अच्छा लगा।\n\n" +
-      "मैं आयशा (Aisha) हूँ — *My Mercury Dry Cleaners*, Mahoba (Since 1980 — 46+ वर्षों का अटूट विश्वास ✨) की सीनियर कस्टमर असिस्टेंट।\n\n" +
-      "बताइए, आज मैं आपके कपड़ों की ड्राई क्लीनिंग, स्टीम प्रेस या होम पिकअप में आपकी क्या सहायता कर सकती हूँ?\n\n" +
-      "💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *saree*, *lehenga*, *blazer*, *kambal*) लिखकर रेट पूछ सकते हैं!",
-      ...menuFooter()
-    ];
-  }
-
   return [
     "क्षमा करें, मुझे यह समझ नहीं आया। 😊\n\n" +
     "कृपया नीचे दिए गए मेन्यू में से कोई नंबर (1-7) चुनें, या किसी कपड़े का नाम (उदा. *saree*, *lehenga*, *blazer*, *blanket*) लिखकर रेट पूछें:",
@@ -521,7 +505,7 @@ async function handleMessage(phone, rawText) {
   try {
     const aiReply = await generateSmartReply(text);
     if (aiReply && aiReply.trim()) {
-      return [aiReply.trim(), ...menuFooter()];
+      return [aiReply.trim()];
     }
   } catch (err) {
     console.warn("AI generation note:", err.message);
