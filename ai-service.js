@@ -114,6 +114,7 @@ BEHAVIORAL RULES & DYNAMIC REASONING (THINK BEFORE YOU REPLY):
 `;
 
 let discoveredGroqModel = null;
+let cachedGroqChatModels = [];
 
 async function getWorkingGroqModel(apiKey) {
   if (discoveredGroqModel) return discoveredGroqModel;
@@ -121,28 +122,52 @@ async function getWorkingGroqModel(apiKey) {
   try {
     const listRes = await fetch("https://api.groq.com/openai/v1/models", {
       headers: { Authorization: `Bearer ${apiKey}` },
-      signal: AbortSignal.timeout(4000)
+      signal: AbortSignal.timeout(5000)
     });
     if (listRes.ok) {
       const data = await listRes.json();
       const availableIds = (data.data || []).map((m) => m.id);
+      console.log("[Groq] Raw models found:", availableIds);
+
+      // Filter out non-chat models (guards, whisper, embeddings, vision)
+      const validChatModels = availableIds.filter((id) => {
+        const lower = (id || "").toLowerCase();
+        return (
+          !lower.includes("guard") &&
+          !lower.includes("whisper") &&
+          !lower.includes("embed") &&
+          !lower.includes("safetensors") &&
+          !lower.includes("vision")
+        );
+      });
+
+      console.log("[Groq] Active Chat Models:", validChatModels);
+      cachedGroqChatModels = validChatModels;
+
+      // Reliable Groq production text chat models in order of priority
       const preferred = [
+        "llama3-8b-8192",
+        "llama3-70b-8192",
+        "gemma2-9b-it",
         "llama-3.1-8b-instant",
         "llama-3.3-70b-versatile",
-        "llama-3.1-70b-versatile",
-        "mixtral-8x7b-32768",
-        "gemma2-9b-it"
+        "qwen-2.5-32b",
+        "deepseek-r1-distill-llama-70b",
+        "llama-3.2-3b-preview",
+        "llama-3.2-1b-preview"
       ];
+
       for (const p of preferred) {
-        if (availableIds.includes(p)) {
+        if (validChatModels.includes(p)) {
           discoveredGroqModel = p;
-          console.log(`[Groq] Discovered and selected active model: ${p}`);
+          console.log(`[Groq] Selected preferred model: ${p}`);
           return p;
         }
       }
-      if (availableIds.length > 0) {
-        discoveredGroqModel = availableIds[0];
-        console.log(`[Groq] Selected available model: ${discoveredGroqModel}`);
+
+      if (validChatModels.length > 0) {
+        discoveredGroqModel = validChatModels[0];
+        console.log(`[Groq] Fallback to available chat model: ${discoveredGroqModel}`);
         return discoveredGroqModel;
       }
     }
@@ -150,20 +175,32 @@ async function getWorkingGroqModel(apiKey) {
     console.warn("[Groq] Could not list models:", e.message);
   }
 
-  discoveredGroqModel = "llama-3.1-8b-instant";
+  discoveredGroqModel = "llama3-8b-8192";
   return discoveredGroqModel;
 }
 
 async function callGroq(userMessage, apiKey) {
   const primaryModel = await getWorkingGroqModel(apiKey);
-  const fallbackModels = [
+  const fallbackList = [
     primaryModel,
-    "llama-3.1-8b-instant",
-    "llama-3.3-70b-versatile",
-    "llama-3.1-70b-versatile",
-    "mixtral-8x7b-32768"
+    ...cachedGroqChatModels,
+    "llama3-8b-8192",
+    "llama3-70b-8192",
+    "gemma2-9b-it",
+    "llama-3.2-3b-preview",
+    "llama-3.2-1b-preview"
   ];
-  const uniqueModels = [...new Set(fallbackModels)];
+
+  const uniqueModels = [...new Set(fallbackList)].filter((id) => {
+    const lower = (id || "").toLowerCase();
+    return (
+      id &&
+      !lower.includes("guard") &&
+      !lower.includes("whisper") &&
+      !lower.includes("embed") &&
+      !lower.includes("vision")
+    );
+  });
 
   for (const model of uniqueModels) {
     try {
@@ -180,7 +217,7 @@ async function callGroq(userMessage, apiKey) {
             { role: "system", content: SYSTEM_PROMPT },
             { role: "user", content: userMessage }
           ],
-          temperature: 0.3,
+          temperature: 0.4,
           max_tokens: 350
         }),
         signal: AbortSignal.timeout(8000)
