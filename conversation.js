@@ -62,10 +62,11 @@ const PICKUP_DELIVERY_TEXT =
   `📞 *Inquiry & Contact:* ${SHOP_PHONE}`;
 
 const SOCIAL_MEDIA_TEXT =
-  `🌐 *Our Official Social Media Pages (सोशल मीडिया)*\n\n` +
-  `• *Facebook Page:* https://www.facebook.com/MyMercuryDryCleaners\n` +
-  `• *Instagram:* https://www.instagram.com/mymercurydrycleaners\n\n` +
-  `आप हमारे Facebook और Instagram पेज पर हमारी सेवाएं, ग्राहक समीक्षाएं और लेटेस्ट अपडेट्स देख सकते हैं! ✨`;
+  `🌐 *Our Official Website & Social Media Pages*\n\n` +
+  `• *Official Website:* https://mymercurydrycleaners.com/\n` +
+  `• *Facebook Page:* https://www.facebook.com/mdcmahoba/\n` +
+  `• *Instagram:* https://www.instagram.com/my_mercury_dry_cleaners/\n\n` +
+  `आप हमारी वेबसाइट व Facebook/Instagram पेज पर हमारी सेवाएं, ग्राहक समीक्षाएं और लेटेस्ट अपडेट्स देख सकते हैं! ✨`;
 
 const PRIVACY_TEXT =
   `🔒 *Gopniyata & Privacy Notice*\n\n` +
@@ -447,9 +448,9 @@ async function handleMessage(phone, rawText) {
     return [PRIVACY_TEXT, ...menuFooter()];
   }
 
-  // 1c. Official Social Media Page Links (Facebook & Instagram)
+  // 1c. Official Website & Social Media Page Links (Website, Facebook & Instagram)
   const socialTriggers = [
-    "facebook", "fb page", "instagram", "insta", "social media"
+    "facebook", "fb page", "instagram", "insta", "social media", "website", "site", "web link"
   ];
   if (socialTriggers.some((s) => lower.includes(s))) {
     return [SOCIAL_MEDIA_TEXT, ...menuFooter()];
