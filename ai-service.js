@@ -46,7 +46,7 @@ PROCESSING & TURNAROUND TIME POLICY (कपड़े तैयार होन�
 - Rare Potential Delays (संभावित विलंब): अत्यधिक बारिश/खराब मौसम (धूप न होना जिससे कपड़े सुखाने में अतिरिक्त समय लगे), बिजली आपूर्ति में बाधा या मशीनरी की दुर्लभ तकनीकी खराबी के समय थोड़ा अतिरिक्त समय लग सकता है।
 - Urgent / Express Delivery: यदि ग्राहक को कपड़े आपातकालीन/जल्दी चाहिए, तो तुरंत दुकान पर सीधे संपर्क करने को कहें (📞 9151517444).
 
-AUTHENTIC PRICING SPECTRUM (From 170-item Official Price Catalog):
+AUTHENTIC PRICING SPECTRUM (From Official 157-item Price Catalog 2026-27):
 - Men's Wear:
   * Blazer / Coat: ₹200
   * Suit 2-Piece: ₹250 | Suit 3-Piece: ₹300 | Indowestern: ₹300 | Safari: ₹200
