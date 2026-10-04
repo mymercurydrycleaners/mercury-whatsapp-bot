@@ -456,6 +456,20 @@ async function handleMessage(phone, rawText) {
     return [SOCIAL_MEDIA_TEXT, ...menuFooter()];
   }
 
+  // 1d. Order Status Inquiry (Strictly Bill Number Only)
+  const orderTriggers = [
+    "order status", "bill status", "order check", "bill check", "ready hua",
+    "ready hue", "ready ho gaye", "kapde ready", "status bataye", "status batao",
+    "bill no", "order no", "bill number", "order number"
+  ];
+  if (orderTriggers.some((o) => lower.includes(o))) {
+    session.step = "awaiting_order_number";
+    return [
+      "📦 *Order / Bill Status Check*\n\n" +
+      "कृपया अपना *Bill Number* या *Order Number* (उदा. 1052 या ORD101) लिखकर भेजें, मैं तुरंत स्थिति चेक कर देती हूँ! 😊"
+    ];
+  }
+
   // 2. Customer Satisfaction / Wrap-up / Thank You
   if (
     CLOSING_TRIGGERS.includes(lower) ||
