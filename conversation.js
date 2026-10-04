@@ -54,12 +54,23 @@ const SERVICES_TEXT =
   `👉 किसी भी कपड़े का रेट जानने के लिए उसका नाम लिखें (उदा. *saree*, *lehenga*, *blazer*, *blanket*) या *4* दबाकर पूरी रेट लिस्ट देखें।`;
 
 const PICKUP_DELIVERY_TEXT =
-  `🚚 *होम पिकअप व डिलीवरी (Doorstep Pickup & Delivery)*\n\n` +
-  `महोबा शहर में आपके घर या दुकान से कपड़े पिकअप करने की सुविधा उपलब्ध है!\n\n` +
-  `📲 पिकअप बुक करने के लिए:\n` +
-  `1️⃣ सीधे कॉल या WhatsApp करें: *${SHOP_PHONE}*\n` +
-  `2️⃣ या Play Store से हमारी Android App (*"${SHOP_NAME}"*) का उपयोग करें।\n\n` +
-  `📞 अभी संपर्क करें: ${SHOP_PHONE}`;
+  `🚚 *Pickup & Delivery Service Update*\n\n` +
+  `Due to the unavailability of our delivery staff, we are currently unable to arrange a Pickup and drop.\n\n` +
+  `(डिलीवरी स्टाफ की अनुपलब्धता के कारण, वर्तमान में हम पिकअप और ड्रॉप की सुविधा प्रदान करने में असमर्थ हैं।)\n\n` +
+  `📍 *आप कपड़े सीधे हमारी दुकान पर ला सकते हैं:*\n` +
+  `${SHOP_ADDRESS_SHORT}\n\n` +
+  `📞 *Inquiry & Contact:* ${SHOP_PHONE}`;
+
+const SOCIAL_MEDIA_TEXT =
+  `🌐 *Our Official Social Media Pages (सोशल मीडिया)*\n\n` +
+  `• *Facebook Page:* https://www.facebook.com/MyMercuryDryCleaners\n` +
+  `• *Instagram:* https://www.instagram.com/mymercurydrycleaners\n\n` +
+  `आप हमारे Facebook और Instagram पेज पर हमारी सेवाएं, ग्राहक समीक्षाएं और लेटेस्ट अपडेट्स देख सकते हैं! ✨`;
+
+const PRIVACY_TEXT =
+  `🔒 *Gopniyata & Privacy Notice*\n\n` +
+  `यह गोपनीय जानकारी (confidential information) है, मैं इसे शेयर नहीं कर सकती हूँ। 😊\n\n` +
+  `मैं *My Mercury Dry Cleaners* की AI वर्चुअल असिस्टेंट *Aisha (आयशा)* हूँ। कपड़ों की ड्राई क्लीनिंग, स्टीम प्रेस, रेट लिस्ट या स्टोर लोकेशन से जुड़ी किसी भी जानकारी के लिए मैं आपकी पूरी मदद करने के लिए तैयार हूँ! ✨`;
 
 const ESCALATION_TEXT =
   `🙏 *ग्राहक सहायता (Customer Support / Manager Desk)*\n\n` +
@@ -420,11 +431,28 @@ async function handleMessage(phone, rawText) {
   const escalationTriggers = [
     "damage", "torn", "kharaab", "kharab", "jala", "burnt", "color fade",
     "rang chhut", "refund", "paisa wapas", "police", "court", "case",
-    "complaint", "shikayat", "chor", "fraud", "owner se baat", "manager"
+    "complaint", "shikayat", "chor", "fraud", "manager"
   ];
   if (escalationTriggers.some((t) => lower.includes(t))) {
     resetSession(phone);
     return [ESCALATION_TEXT, ...menuFooter()];
+  }
+
+  // 1b. Privacy & Owner Information Protection
+  const privacyTriggers = [
+    "amit", "gupta", "owner", "malik", "malkin", "kiski dukan", "kiska h",
+    "kiske h", "personal detail", "personal info", "confidential", "kiska shop"
+  ];
+  if (privacyTriggers.some((p) => lower.includes(p))) {
+    return [PRIVACY_TEXT, ...menuFooter()];
+  }
+
+  // 1c. Official Social Media Page Links (Facebook & Instagram)
+  const socialTriggers = [
+    "facebook", "fb page", "instagram", "insta", "social media"
+  ];
+  if (socialTriggers.some((s) => lower.includes(s))) {
+    return [SOCIAL_MEDIA_TEXT, ...menuFooter()];
   }
 
   // 2. Customer Satisfaction / Wrap-up / Thank You
