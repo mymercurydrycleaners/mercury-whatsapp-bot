@@ -20,12 +20,85 @@ const SHOP_ADDRESS_SHORT = "1st Floor, In front of Shukwari Bazar, Mahoba";
 const SHOP_ADDRESS_FULL =
   "1st Floor, In front of Shukwari Bazar, Near Old Private Bus Stand, Mahoba, Uttar Pradesh - 210427";
 
-const SHOP_TIMING_TEXT =
-  `🕒 *दुकान का समय (Shop Operating Hours)*\n\n` +
-  `• *सोमवार – शनिवार:* सुबह 09:30 AM से रात 08:30 PM\n` +
-  `• *रविवार (Sunday):* सुबह 10:00 AM से रात 08:00 PM\n\n` +
-  `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
-  `📞 *कॉल / पूछताछ:* ${SHOP_PHONE}`;
+function getShopStatus() {
+  const now = new Date();
+  const istDateString = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const istDate = new Date(istDateString);
+
+  const dayOfWeek = istDate.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayName = days[dayOfWeek];
+
+  const hours = istDate.getHours();
+  const minutes = istDate.getMinutes();
+  const currentTotalMinutes = hours * 60 + minutes;
+
+  const isSunday = (dayOfWeek === 0);
+  const openMinutes = isSunday ? (10 * 60) : (9 * 60 + 30); // 10:00 AM or 09:30 AM
+  const closeMinutes = isSunday ? (20 * 60) : (20 * 60 + 30); // 08:00 PM or 08:30 PM
+
+  const isOpen = currentTotalMinutes >= openMinutes && currentTotalMinutes < closeMinutes;
+
+  const timeFormatted = now.toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  const todayCloseTime = isSunday ? "रात 08:00 PM" : "रात 08:30 PM";
+  let nextOpenDesc = "";
+  if (isOpen) {
+    nextOpenDesc = `दुकान आज ${todayCloseTime} तक खुली रहेगी। आप कपड़े ला सकते हैं! ✨`;
+  } else if (currentTotalMinutes < openMinutes) {
+    const openTimeStr = isSunday ? "10:00 AM" : "09:30 AM";
+    nextOpenDesc = `दुकान आज सुबह ${openTimeStr} पर खुलेगी। आप सुबह कपड़े ला सकते हैं!`;
+  } else {
+    const tomorrowIsSunday = dayOfWeek === 6;
+    const openTimeStr = tomorrowIsSunday ? "10:00 AM (Sunday)" : "09:30 AM";
+    nextOpenDesc = `दुकान आज बंद हो चुकी है और कल सुबह ${openTimeStr} पर खुलेगी। आप कल कपड़े ला सकते हैं!`;
+  }
+
+  return {
+    isOpen,
+    dayName,
+    timeFormatted,
+    todayCloseTime,
+    nextOpenDesc,
+    statusText: isOpen ? "OPEN" : "CLOSED"
+  };
+}
+
+function getShopTimingStatusMessage() {
+  const status = getShopStatus();
+  if (status.isOpen) {
+    return (
+      `📍 *${SHOP_NAME} — Current Status*\n\n` +
+      `✅ *जी हाँ, दुकान अभी खुली है! (Store is Currently Open)*\n\n` +
+      `🕒 *अभी का समय:* ${status.timeFormatted} (${status.dayName})\n` +
+      `✨ ${status.nextOpenDesc}\n\n` +
+      `🕒 *दुकान का समय (Working Hours):*\n` +
+      `• *Monday to Saturday:* 09:30 AM to 08:30 PM\n` +
+      `• *Sunday:* 10:00 AM to 08:00 PM\n\n` +
+      `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
+      `📞 *कॉल / पूछताछ:* ${SHOP_PHONE}`
+    );
+  } else {
+    return (
+      `📍 *${SHOP_NAME} — Current Status*\n\n` +
+      `⛔ *दुकान अभी बंद है (Store is Currently Closed)*\n\n` +
+      `🕒 *अभी का समय:* ${status.timeFormatted} (${status.dayName})\n` +
+      `🌙 ${status.nextOpenDesc}\n\n` +
+      `🕒 *दुकान का समय (Working Hours):*\n` +
+      `• *Monday to Saturday:* 09:30 AM to 08:30 PM\n` +
+      `• *Sunday:* 10:00 AM to 08:00 PM\n\n` +
+      `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
+      `📞 *कॉल / सहायता:* ${SHOP_PHONE}`
+    );
+  }
+}
+
+const SHOP_TIMING_TEXT = getShopTimingStatusMessage();
 
 const DELIVERY_TIME_TEXT =
   `⏱️ *कपड़े तैयार होने का समय (Delivery & Processing Turnaround)*\n\n` +
@@ -371,10 +444,11 @@ function handleLocalRules(phone, text, lower, session) {
   if (
     lower.includes("timing") || lower.includes("samay") ||
     lower.includes("kab khult") || lower.includes("kab khuleg") || lower.includes("kab band") ||
-    lower.includes("khula hai") || lower.includes("kholte") || lower.includes("aaj open") ||
-    lower.includes("chhutti") || lower.includes("working hour") || lower.includes("opening")
+    lower.includes("khula hai") || lower.includes("khuli hai") || lower.includes("kholte") ||
+    lower.includes("open") || lower.includes("close") || lower.includes("chhutti") ||
+    lower.includes("working hour") || lower.includes("opening")
   ) {
-    return [SHOP_TIMING_TEXT, ...menuFooter()];
+    return [getShopTimingStatusMessage(), ...menuFooter()];
   }
 
   // 5. Location & Address (Must be asking for location/address/directions)
@@ -470,6 +544,19 @@ async function handleMessage(phone, rawText) {
     ];
   }
 
+  // 1e. Shop Timings & Real-Time Open / Closed Inquiries
+  const timingTriggers = [
+    "timing", "timings", "samay", "working hour", "working hours",
+    "kab khult", "kab khuleg", "kab band", "band hoti", "band hoga", "band h", "band hai",
+    "khula hai", "khuli hai", "khula h", "khuli h", "khula rhega", "khuli rhegi",
+    "kholte", "chhutti", "holiday", "open hai", "open h", "open now",
+    "open or not", "is shop open", "is it open", "shop open", "store open",
+    "closed hai", "band toh nahi", "abhi aa sakte", "open kab"
+  ];
+  if (timingTriggers.some((k) => lower.includes(k))) {
+    return [getShopTimingStatusMessage(), ...menuFooter()];
+  }
+
   // 2. Customer Satisfaction / Wrap-up / Thank You
   if (
     CLOSING_TRIGGERS.includes(lower) ||
@@ -527,7 +614,7 @@ async function handleMessage(phone, rawText) {
   }
 
   // 5. Main Numbered Menu Choices (1-7)
-  if (text === "1") return [SHOP_TIMING_TEXT, ...menuFooter()];
+  if (text === "1") return [getShopTimingStatusMessage(), ...menuFooter()];
   if (text === "2") return [SHOP_LOCATION_TEXT, ...menuFooter()];
   if (text === "3") return [SERVICES_TEXT, ...menuFooter()];
   if (text === "4") {

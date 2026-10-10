@@ -2,7 +2,7 @@
 // Multi-Provider AI Engine for My Mercury Dry Cleaners WhatsApp Bot
 // Supports: Groq Cloud (Llama 3.1 8B / 3.3 70B / 3.1 70B / Mixtral) & Google Gemini (1.5 Flash / 2.0 Flash)
 
-const SYSTEM_PROMPT = `
+const BASE_SYSTEM_PROMPT = `
 You are "Aisha" (आयशा), the Senior Virtual Customer Care Specialist for "My Mercury Dry Cleaners", Mahoba (Since 1980 — Over 46+ years of trusted garment care excellence).
 
 CORE THINKING & ACCURACY DIRECTIVE (सोच-समझकर परफेक्ट व सटीक जवाब देने का निर्देश):
@@ -165,6 +165,75 @@ Due to the unavailability of our delivery staff, we are currently unable to arra
     - Sign off gracefully with: "— आयशा (Aisha) 😊"
 `;
 
+function getRealTimeContext() {
+  const now = new Date();
+  const istDateString = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const istDate = new Date(istDateString);
+
+  const dayOfWeek = istDate.getDay(); // 0 = Sun, 1 = Mon, ..., 6 = Sat
+  const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const dayName = days[dayOfWeek];
+
+  const hours = istDate.getHours();
+  const minutes = istDate.getMinutes();
+  const currentTotalMinutes = hours * 60 + minutes;
+
+  const isSunday = (dayOfWeek === 0);
+  const openMinutes = isSunday ? (10 * 60) : (9 * 60 + 30); // 10:00 AM or 09:30 AM
+  const closeMinutes = isSunday ? (20 * 60) : (20 * 60 + 30); // 08:00 PM or 08:30 PM
+
+  const isOpen = currentTotalMinutes >= openMinutes && currentTotalMinutes < closeMinutes;
+
+  const timeFormatted = now.toLocaleTimeString("en-IN", {
+    timeZone: "Asia/Kolkata",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  const todayCloseTime = isSunday ? "रात 08:00 PM" : "रात 08:30 PM";
+  let nextOpenDesc = "";
+  if (isOpen) {
+    nextOpenDesc = `दुकान आज ${todayCloseTime} तक खुली रहेगी। आप कपड़े ला सकते हैं!`;
+  } else if (currentTotalMinutes < openMinutes) {
+    const openTimeStr = isSunday ? "10:00 AM" : "09:30 AM";
+    nextOpenDesc = `दुकान आज सुबह ${openTimeStr} पर खुलेगी।`;
+  } else {
+    const tomorrowIsSunday = dayOfWeek === 6;
+    const openTimeStr = tomorrowIsSunday ? "10:00 AM (Sunday)" : "09:30 AM";
+    nextOpenDesc = `दुकान आज रात बंद हो चुकी है और कल सुबह ${openTimeStr} पर खुलेगी।`;
+  }
+
+  return {
+    isOpen,
+    dayName,
+    timeFormatted,
+    todayCloseTime,
+    nextOpenDesc,
+    statusText: isOpen ? "OPEN (खुली है)" : "CLOSED (बंद है)"
+  };
+}
+
+function getSystemPrompt() {
+  const rtc = getRealTimeContext();
+  return `${BASE_SYSTEM_PROMPT}
+
+LIVE REAL-TIME SYSTEM CLOCK & STORE STATUS (Asia/Kolkata - IST):
+- Current Day & Time: ${rtc.dayName}, ${rtc.timeFormatted} (IST)
+- Current Store Status: ${rtc.statusText}
+- Live Note: ${rtc.nextOpenDesc}
+
+CRITICAL RULES FOR STORE TIMINGS & OPEN/CLOSED INQUIRIES:
+1. When asked if the store is open or closed RIGHT NOW (e.g. "open or not", "is shop open", "khuli hai", "aa sakte hain", "open now"):
+   - You MUST STRICTLY respect the Current Store Status above (${rtc.statusText} at ${rtc.timeFormatted}).
+   - If it is CLOSED: State clearly that the store is currently CLOSED (दुकान अभी बंद है). Mention current time (${rtc.timeFormatted}) and when it opens next (${rtc.nextOpenDesc}). NEVER hallucinate that the store is open when it is closed!
+   - If it is OPEN: Confirm it is open right now, mention closing time today (${rtc.todayCloseTime}), and welcome them.
+2. If asked about general working hours:
+   - Monday to Saturday: 09:30 AM to 08:30 PM
+   - Sunday: 10:00 AM to 08:00 PM
+`;
+}
+
 let discoveredGroqModel = null;
 let cachedGroqChatModels = [];
 
@@ -266,7 +335,7 @@ async function callGroq(userMessage, apiKey) {
         body: JSON.stringify({
           model,
           messages: [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: getSystemPrompt() },
             { role: "user", content: userMessage }
           ],
           temperature: 0.4,
@@ -365,7 +434,7 @@ async function callGemini(userMessage, apiKey) {
           contents: [
             {
               role: "user",
-              parts: [{ text: `${SYSTEM_PROMPT}\n\nCustomer Message: ${userMessage}` }]
+              parts: [{ text: `${getSystemPrompt()}\n\nCustomer Message: ${userMessage}` }]
             }
           ],
           generationConfig: {
@@ -419,4 +488,4 @@ async function generateSmartReply(userMessage) {
   return null;
 }
 
-module.exports = { generateSmartReply, SYSTEM_PROMPT };
+module.exports = { generateSmartReply, getSystemPrompt, getRealTimeContext, BASE_SYSTEM_PROMPT };
