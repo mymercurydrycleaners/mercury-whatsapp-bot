@@ -116,6 +116,49 @@ const SHOP_LOCATION_TEXT =
   `🗺️ *Google Maps पर लोकेशन देखें:*\n${SHOP_MAPS_URL}\n\n` +
   `📞 *दुकान पर संपर्क करें:* ${SHOP_PHONE}`;
 
+// ---------------------------------------------------------------------
+// Special Festival / Winter Discount Offer (MM20: 16 Oct to 31 Oct 2026)
+// ---------------------------------------------------------------------
+function getOfferStatus() {
+  const now = new Date();
+  const istDateString = now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+  const istDate = new Date(istDateString);
+
+  const offerStart = new Date("2026-10-16T00:00:00+05:30");
+  const offerEnd = new Date("2026-10-31T23:59:59+05:30");
+  const isActive = istDate >= offerStart && istDate <= offerEnd;
+
+  return { isActive, offerStart, offerEnd };
+}
+
+const SPECIAL_OFFER_TEXT =
+  `🎉 *Congratulations! आपका Special Discount Coupon तैयार है!* 🎉\n\n` +
+  `💚💛 Welcome to *MY MERCURY DRY CLEANERS, MAHOBA*\n\n` +
+  `सर्दियों के कंबल की सफाई पर पाइए शानदार ऑफर! ❄️✨\n\n` +
+  `🎁 *20% OFF — Blanket Dry Cleaning*\n\n` +
+  `🎟️ *Your Coupon Code:* *MM20*\n` +
+  `📅 *ऑफर वैलिडिटी:* 16 Oct 2026 से 31 Oct 2026 तक\n\n` +
+  `✅ Premium Blanket Dry Cleaning\n` +
+  `✅ Professional Fabric Care\n` +
+  `✅ Hygienic Vacuum Packing\n` +
+  `✅ Pick-up & Drop Available\n\n` +
+  `📍 *1st Floor, Infront of Shukwari Bazar, Mahoba*\n\n` +
+  `📞 Shop: *091515 17444*\n\n` +
+  `🤖 *My Mercury AI Assistant*\n\n` +
+  `💚 अपना कूपन इस्तेमाल करने के लिए बुकिंग के समय *MM20* बताएं।\n\n` +
+  `*धन्यवाद! आपकी पसंदीदा सफाई, हमारी जिम्मेदारी।*`;
+
+const EXPIRED_OFFER_TEXT =
+  `🙏 *My Mercury Dry Cleaners*\n\n` +
+  `सर्दियों का स्पेशल 20% OFF कंबल कूपन (*MM20*) 16 Oct से 31 Oct 2026 तक के लिए वैध था और अब समाप्त हो चुका है।\n\n` +
+  `✨ हमारे वर्तमान रेट लिस्ट के लिए *4* दबाएं या किसी कपड़े का नाम (उदा. *saree*, *blazer*, *suit*, *blanket*) लिखकर रेट पूछें।\n\n` +
+  `📞 किसी भी पूछताछ के लिए कॉल करें: *${SHOP_PHONE}*`;
+
+function getOfferMessage() {
+  const { isActive } = getOfferStatus();
+  return isActive ? SPECIAL_OFFER_TEXT : EXPIRED_OFFER_TEXT;
+}
+
 const SERVICES_TEXT =
   `🧺 *हमारी मुख्य सेवाएं (Our Services)*\n\n` +
   `✨ *Professional Dry Cleaning* — कोट, ब्लेज़र, सूट, शेरवानी, पैंट, शर्ट\n` +
@@ -409,11 +452,26 @@ function formatMatches(matches) {
     const priceText = m.price && m.price > 0 ? `₹${m.price}` : "संपर्क करें";
     text += `${emoji} *${m.garment}* (${m.category}): *${priceText}*\n`;
   });
+
+  if (getOfferStatus().isActive && matches.some((m) => (m.garment || "").toLowerCase().includes("blanket") || (m.garment || "").includes("कंबल"))) {
+    text += `\n\n🎉 *Special Festive Offer (16-31 Oct):* कंबल की ड्राई क्लीनिंग पर पाइए *20% OFF*! कूपन कोड: *MM20* 🎟️`;
+  }
+
   text += `\n📞 *दुकान पर संपर्क या होम पिकअप:* *${SHOP_PHONE}*`;
   return text.trim();
 }
 
 function handleLocalRules(phone, text, lower, session) {
+  // 0. Special Offer Inquiry (MM20 - 16 Oct to 31 Oct 2026)
+  const offerKeywords = [
+    "offer", "offers", "discount", "discounts", "coupon", "coupons", "promo",
+    "promocode", "scheme", "chhut", "chut", "mm20", "kambal offer", "blanket offer",
+    "festive offer", "diwali offer", "special offer", "deal", "deals"
+  ];
+  if (offerKeywords.some((o) => lower.includes(o))) {
+    return [getOfferMessage(), ...menuFooter()];
+  }
+
   // 1. Delivery & Processing Turnaround Time (kitna time lagta hai / kab milega)
   const deliveryWords = [
     "kitna time", "kitne din", "kitna din", "kab tak", "kab milega",
@@ -557,6 +615,16 @@ async function handleMessage(phone, rawText) {
     return [getShopTimingStatusMessage(), ...menuFooter()];
   }
 
+  // 1f. Special Offers & Discount Coupon (MM20 - 16 Oct to 31 Oct 2026)
+  const offerTriggers = [
+    "offer", "offers", "discount", "discounts", "coupon", "coupons", "promo",
+    "promocode", "scheme", "chhut", "chut", "mm20", "kambal offer", "blanket offer",
+    "festive offer", "diwali offer", "special offer", "deal", "deals"
+  ];
+  if (offerTriggers.some((o) => lower.includes(o))) {
+    return [getOfferMessage(), ...menuFooter()];
+  }
+
   // 2. Customer Satisfaction / Wrap-up / Thank You
   if (
     CLOSING_TRIGGERS.includes(lower) ||
@@ -630,6 +698,7 @@ async function handleMessage(phone, rawText) {
     ];
   }
   if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
+  if (text === "8") return [getOfferMessage(), ...menuFooter()];
 
   // 5. Intelligent AI Response (Gemini 2.0 Flash / Groq Llama 3.3)
   try {
@@ -653,8 +722,14 @@ function menuFooter() {
 }
 
 function greetingAndMenu() {
+  const isOffer = getOfferStatus().isActive;
+  const offerBanner = isOffer
+    ? `🎁 *Special Festival Offer (16-31 Oct):*\nसर्दियों के कंबल की सफाई पर *20% OFF*! कूपन कोड: *MM20* 🎟️\n\n`
+    : "";
+
   return [
     `🙏 नमस्ते! आपका स्वागत है *${SHOP_NAME}*, Mahoba (Since 1980 — 46+ वर्षों का अटूट विश्वास ✨) में।\n\n` +
+    offerBanner +
     `मैं आपकी डिजिटल असिस्टेंट *आयशा (Aisha)* हूँ। बताइए, आज मैं आपकी क्या सहायता कर सकती हूँ?\n\n` +
     `1️⃣ 🕒 दुकान का समय (Shop Timings)\n` +
     `2️⃣ 📍 दुकान का पता व मैप (Location & Map)\n` +
@@ -662,8 +737,9 @@ function greetingAndMenu() {
     `4️⃣ 💰 रेट लिस्ट (Price List)\n` +
     `5️⃣ 🚚 होम पिकअप व डिलीवरी (Doorstep Pickup)\n` +
     `6️⃣ 📦 आर्डर स्टेटस (Check Order Status)\n` +
-    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n\n` +
-    `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या अपना कोई भी सवाल पूछ सकते हैं!`
+    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n` +
+    `8️⃣ 🎁 स्पेशल डिस्काउंट ऑफर (Special Offer — 20% OFF)\n\n` +
+    `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या *"offer"* लिखकर पूछ सकते हैं!`
   ];
 }
 

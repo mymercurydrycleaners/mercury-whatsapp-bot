@@ -204,19 +204,46 @@ function getRealTimeContext() {
     nextOpenDesc = `दुकान आज रात बंद हो चुकी है और कल सुबह ${openTimeStr} पर खुलेगी।`;
   }
 
+  // Special Winter / Festival Offer: 16 Oct 2026 to 31 Oct 2026
+  const offerStart = new Date("2026-10-16T00:00:00+05:30");
+  const offerEnd = new Date("2026-10-31T23:59:59+05:30");
+  const isOfferActive = istDate >= offerStart && istDate <= offerEnd;
+
   return {
     isOpen,
     dayName,
     timeFormatted,
     todayCloseTime,
     nextOpenDesc,
-    statusText: isOpen ? "OPEN (खुली है)" : "CLOSED (बंद है)"
+    statusText: isOpen ? "OPEN (खुली है)" : "CLOSED (बंद है)",
+    isOfferActive
   };
 }
 
 function getSystemPrompt() {
   const rtc = getRealTimeContext();
+  const offerPrompt = rtc.isOfferActive
+    ? `SPECIAL ACTIVE FESTIVAL / WINTER DISCOUNT OFFER (VALID: 16 OCT 2026 TO 31 OCT 2026):
+- Offer: 20% OFF on Blanket (कंबल) Dry Cleaning
+- Coupon Code: MM20
+- Key Benefits:
+  * Premium Blanket Dry Cleaning
+  * Professional Fabric Care
+  * Hygienic Vacuum Packing
+  * Pick-up & Drop Available
+- Discounted Rates with MM20 Coupon:
+  * Blanket Single (एकल कंबल): Normal ₹200 -> With MM20 (20% OFF): ₹160
+  * Blanket Double (डबल कंबल): Normal ₹300 -> With MM20 (20% OFF): ₹240
+- Proactive Guidance:
+  * When a customer asks about offers, discounts, coupons, schemes, deals, or blanket/kambal dry cleaning:
+    Enthusiastically share coupon code MM20 and celebrate the 20% OFF!
+    Tell them: "बुकिंग के समय कूपन कोड MM20 बताएं और 20% छूट पाएं!"`
+    : `SPECIAL PROMOTION NOTICE:
+- The 20% OFF Blanket Dry Cleaning coupon (MM20) valid from 16 Oct to 31 Oct 2026 has expired. Standard prices apply.`;
+
   return `${BASE_SYSTEM_PROMPT}
+
+${offerPrompt}
 
 LIVE REAL-TIME SYSTEM CLOCK & STORE STATUS (Asia/Kolkata - IST):
 - Current Day & Time: ${rtc.dayName}, ${rtc.timeFormatted} (IST)
