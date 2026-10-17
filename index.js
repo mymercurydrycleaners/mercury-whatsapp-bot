@@ -7,6 +7,7 @@ const path = require("path");
 const express = require("express");
 const axios = require("axios");
 const { handleMessage } = require("./conversation");
+const { processPendingReminders, getEnquiryStats } = require("./reminders");
 
 const app = express();
 app.use(express.json());
@@ -32,6 +33,30 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 // ---------------------------------------------------------------------
 app.get("/", (req, res) => {
   res.send("My Mercury Dry Cleaners WhatsApp bot is running.");
+});
+
+// ---------------------------------------------------------------------
+// Enquiry Reminders & Keep-Alive endpoints
+// ---------------------------------------------------------------------
+app.get("/reminders/stats", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    stats: getEnquiryStats()
+  });
+});
+
+app.get("/reminders/process", async (req, res) => {
+  try {
+    await processPendingReminders(sendWhatsAppText);
+    res.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      stats: getEnquiryStats()
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // ---------------------------------------------------------------------
@@ -251,4 +276,13 @@ async function sendWhatsAppImage(to, link, caption) {
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+
+  // Background processor: Check and send pending enquiry reminders every 5 minutes
+  setInterval(async () => {
+    try {
+      await processPendingReminders(sendWhatsAppText);
+    } catch (err) {
+      console.error("Auto-reminder runner error:", err.message);
+    }
+  }, 5 * 60 * 1000);
 });

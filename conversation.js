@@ -6,6 +6,7 @@
 const fs = require("fs");
 const path = require("path");
 const { generateSmartReply } = require("./ai-service");
+const { recordEnquiry, resolveEnquiry } = require("./reminders");
 
 const sessions = new Map(); // key: customer phone number, value: session object
 
@@ -466,6 +467,7 @@ function handleLocalRules(phone, text, lower, session) {
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerKeywords.some((o) => lower.includes(o))) {
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -482,12 +484,14 @@ function handleLocalRules(phone, text, lower, session) {
   // 2. Garment Price Search FIRST (so questions like "lehenga prices on your shop" return prices)
   const matches = searchGarment(text);
   if (matches.length > 0) {
+    recordEnquiry(phone, matches[0]?.garment);
     return [formatMatches(matches), ...menuFooter()];
   }
 
   // 3. General rate inquiry (without specific garment match)
   const generalRateTriggers = ["rate", "rates", "price", "prices", "charge", "charges", "cost", "kitna"];
   if (generalRateTriggers.some((r) => lower.includes(r))) {
+    recordEnquiry(phone, "ड्राई क्लीनिंग रेट लिस्ट");
     session.step = "price_menu";
     return [
       "हमारे यहाँ सभी प्रकार के कपड़ों की ड्राई क्लीनिंग व स्टीम प्रेसिंग उपलब्ध है।\n\n" +
@@ -565,6 +569,7 @@ async function handleMessage(phone, rawText) {
   ];
   if (escalationTriggers.some((t) => lower.includes(t))) {
     resetSession(phone);
+    resolveEnquiry(phone);
     return [ESCALATION_TEXT, ...menuFooter()];
   }
 
@@ -593,6 +598,7 @@ async function handleMessage(phone, rawText) {
   ];
   if (orderTriggers.some((o) => lower.includes(o))) {
     session.step = "awaiting_order_number";
+    resolveEnquiry(phone);
     return [
       "📦 *Order / Bill Status Check*\n\n" +
       "कृपया अपना *Bill Number* या *Order Number* (उदा. 1052 या ORD101) लिखकर भेजें, मैं तुरंत स्थिति चेक कर देती हूँ! 😊"
@@ -619,10 +625,11 @@ async function handleMessage(phone, rawText) {
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerTriggers.some((o) => lower.includes(o))) {
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
     return [getOfferMessage(), ...menuFooter()];
   }
 
-  // 2. Customer Satisfaction / Wrap-up / Thank You
+  // 2. Customer Satisfaction / Wrap-up / Thank You / Cancel
   if (
     CLOSING_TRIGGERS.includes(lower) ||
     lower === "ok thanks" ||
@@ -630,10 +637,15 @@ async function handleMessage(phone, rawText) {
     lower === "theek hai thanks" ||
     lower === "thik h bhaiya" ||
     lower === "thik hai bhaiya" ||
+    lower === "cancel" ||
+    lower === "stop" ||
+    lower === "nahi chahiye" ||
+    lower === "nahi" ||
     lower.startsWith("thank") ||
     lower.startsWith("dhanya")
   ) {
     resetSession(phone);
+    resolveEnquiry(phone);
     return [CLOSING_TEXT];
   }
 
@@ -653,6 +665,7 @@ async function handleMessage(phone, rawText) {
     const matchedCategory = findCategory(text);
     if (matchedCategory) {
       session.step = "menu";
+      recordEnquiry(phone, `${matchedCategory} ड्राई क्लीनिंग`);
       const listResult = categoryPriceListText(matchedCategory);
       const listMessages = Array.isArray(listResult) ? listResult : [listResult];
       return [...listMessages, ...menuFooter()];
@@ -678,7 +691,7 @@ async function handleMessage(phone, rawText) {
     ];
   }
 
-  // 5. Main Numbered Menu Choices (1-7)
+  // 5. Main Numbered Menu Choices (1-8)
   if (text === "1") return [getShopTimingStatusMessage(), ...menuFooter()];
   if (text === "2") return [SHOP_LOCATION_TEXT, ...menuFooter()];
   if (text === "3") return [SERVICES_TEXT, ...menuFooter()];
@@ -695,12 +708,25 @@ async function handleMessage(phone, rawText) {
     ];
   }
   if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
-  if (text === "8") return [getOfferMessage(), ...menuFooter()];
+  if (text === "8") {
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
+    return [getOfferMessage(), ...menuFooter()];
+  }
 
   // 5. Intelligent AI Response (Gemini 2.0 Flash / Groq Llama 3.3)
   try {
     const aiReply = await generateSmartReply(text);
     if (aiReply && aiReply.trim()) {
+      // Record customer inquiry if question was about prices, garments or dry cleaning
+      const priceKeywords = [
+        "rate", "price", "kitna", "dry clean", "saaf", "dhulai", "cost", "charge",
+        "kambal", "saree", "coat", "blazer", "lehenga", "suit", "jacket", "curtain", "parda", "sofa", "carpet"
+      ];
+      if (priceKeywords.some((k) => lower.includes(k))) {
+        const matches = searchGarment(text);
+        const itemName = matches.length > 0 ? matches[0].garment : "ड्राई क्लीनिंग";
+        recordEnquiry(phone, itemName);
+      }
       return [aiReply.trim()];
     }
   } catch (err) {
