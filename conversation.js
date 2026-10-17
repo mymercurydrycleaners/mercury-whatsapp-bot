@@ -148,15 +148,16 @@ const SPECIAL_OFFER_TEXT =
   `💚 अपना कूपन इस्तेमाल करने के लिए बुकिंग के समय *MM20* बताएं।\n\n` +
   `*धन्यवाद! आपकी पसंदीदा सफाई, हमारी जिम्मेदारी।*`;
 
-const EXPIRED_OFFER_TEXT =
-  `🙏 *My Mercury Dry Cleaners*\n\n` +
-  `सर्दियों का स्पेशल 20% OFF कंबल कूपन (*MM20*) 16 Oct से 31 Oct 2026 तक के लिए वैध था और अब समाप्त हो चुका है।\n\n` +
-  `✨ हमारे वर्तमान रेट लिस्ट के लिए *4* दबाएं या किसी कपड़े का नाम (उदा. *saree*, *blazer*, *suit*, *blanket*) लिखकर रेट पूछें।\n\n` +
-  `📞 किसी भी पूछताछ के लिए कॉल करें: *${SHOP_PHONE}*`;
+const NO_OFFER_TEXT =
+  `🎁 *ऑफर्स व डिस्काउंट (Offers & Discounts)*\n\n` +
+  `वर्तमान में कोई विशेष डिस्काउंट ऑफर सक्रिय नहीं है। 😊\n\n` +
+  `लेकिन हमारे सभी ड्राई क्लीनिंग व स्टीम प्रेसिंग रेट्स पहले से ही काफी किफायती और वाजिब हैं! जैसे ही कोई नया फेस्टिवल या सीज़न ऑफर आएगा, हम आपको तुरंत सूचित करेंगे। ✨\n\n` +
+  `💡 किसी भी कपड़े का सामान्य रेट जानने के लिए उसका नाम लिखें (उदा. *saree*, *blazer*, *suit*, *blanket*) या *4* दबाकर पूरी रेट लिस्ट देखें।\n\n` +
+  `📞 किसी भी पूछताछ के लिए सीधे कॉल करें: *${SHOP_PHONE}*`;
 
 function getOfferMessage() {
   const { isActive } = getOfferStatus();
-  return isActive ? SPECIAL_OFFER_TEXT : EXPIRED_OFFER_TEXT;
+  return isActive ? SPECIAL_OFFER_TEXT : NO_OFFER_TEXT;
 }
 
 const SERVICES_TEXT =
@@ -727,7 +728,8 @@ function greetingAndMenu() {
     `4️⃣ 💰 रेट लिस्ट (Price List)\n` +
     `5️⃣ 🚚 होम पिकअप व डिलीवरी (Doorstep Pickup)\n` +
     `6️⃣ 📦 आर्डर स्टेटस (Check Order Status)\n` +
-    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n\n` +
+    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n` +
+    `8️⃣ 🎁 ऑफर्स व डिस्काउंट (Offers & Discounts)\n\n` +
     `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या अपना कोई भी सवाल पूछ सकते हैं!`
   ];
 }

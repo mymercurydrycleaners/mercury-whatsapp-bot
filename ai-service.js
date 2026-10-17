@@ -239,8 +239,11 @@ function getSystemPrompt() {
   * ONLY share the 20% OFF offer details when the customer explicitly asks about offers, discounts, coupons, schemes, promo codes, deals, or asks "koi offer hai kya"!
   * When they DO ask, provide the full coupon details (20% OFF Blanket Dry Cleaning, Coupon Code: MM20) and ALWAYS clearly mention the validity dates: 16 October 2026 to 31 October 2026!
   * Tell them: "बुकिंग के समय कूपन कोड MM20 बताएं और 20% छूट पाएं!"`
-    : `SPECIAL PROMOTION NOTICE:
-- The 20% OFF Blanket Dry Cleaning coupon (MM20) valid from 16 Oct to 31 Oct 2026 has expired. Standard prices apply.`;
+    : `CURRENT PROMOTIONS STATUS:
+- Currently, there is NO active discount or promotional offer available (No offers now).
+- When a customer asks about offers, discounts, coupons, schemes, deals, or selects option 8:
+  Politely and warmly explain in conversational Hinglish that currently there is no special discount offer active ("वर्तमान में कोई विशेष डिस्काउंट ऑफर सक्रिय नहीं है").
+  Reassure them that our regular prices are already very competitive and premium quality, and as soon as a new festive/seasonal offer arrives, we will be glad to share it with them. Invite them to check regular rates by asking for any garment name or pressing 4.`;
 
   return `${BASE_SYSTEM_PROMPT}
 
