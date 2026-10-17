@@ -137,7 +137,7 @@ const SPECIAL_OFFER_TEXT =
   `सर्दियों के कंबल की सफाई पर पाइए शानदार ऑफर! ❄️✨\n\n` +
   `🎁 *20% OFF — Blanket Dry Cleaning*\n\n` +
   `🎟️ *Your Coupon Code:* *MM20*\n` +
-  `📅 *ऑफर वैलिडिटी:* 16 Oct 2026 से 31 Oct 2026 तक\n\n` +
+  `📅 *ऑफर वैलिडिटी (Offer Validity):* 16 अक्टूबर 2026 से 31 अक्टूबर 2026 तक (Valid: 16 Oct to 31 Oct 2026)\n\n` +
   `✅ Premium Blanket Dry Cleaning\n` +
   `✅ Professional Fabric Care\n` +
   `✅ Hygienic Vacuum Packing\n` +
@@ -453,10 +453,6 @@ function formatMatches(matches) {
     text += `${emoji} *${m.garment}* (${m.category}): *${priceText}*\n`;
   });
 
-  if (getOfferStatus().isActive && matches.some((m) => (m.garment || "").toLowerCase().includes("blanket") || (m.garment || "").includes("कंबल"))) {
-    text += `\n\n🎉 *Special Festive Offer (16-31 Oct):* कंबल की ड्राई क्लीनिंग पर पाइए *20% OFF*! कूपन कोड: *MM20* 🎟️`;
-  }
-
   text += `\n📞 *दुकान पर संपर्क या होम पिकअप:* *${SHOP_PHONE}*`;
   return text.trim();
 }
@@ -722,14 +718,8 @@ function menuFooter() {
 }
 
 function greetingAndMenu() {
-  const isOffer = getOfferStatus().isActive;
-  const offerBanner = isOffer
-    ? `🎁 *Special Festival Offer (16-31 Oct):*\nसर्दियों के कंबल की सफाई पर *20% OFF*! कूपन कोड: *MM20* 🎟️\n\n`
-    : "";
-
   return [
     `🙏 नमस्ते! आपका स्वागत है *${SHOP_NAME}*, Mahoba (Since 1980 — 46+ वर्षों का अटूट विश्वास ✨) में।\n\n` +
-    offerBanner +
     `मैं आपकी डिजिटल असिस्टेंट *आयशा (Aisha)* हूँ। बताइए, आज मैं आपकी क्या सहायता कर सकती हूँ?\n\n` +
     `1️⃣ 🕒 दुकान का समय (Shop Timings)\n` +
     `2️⃣ 📍 दुकान का पता व मैप (Location & Map)\n` +
@@ -737,9 +727,8 @@ function greetingAndMenu() {
     `4️⃣ 💰 रेट लिस्ट (Price List)\n` +
     `5️⃣ 🚚 होम पिकअप व डिलीवरी (Doorstep Pickup)\n` +
     `6️⃣ 📦 आर्डर स्टेटस (Check Order Status)\n` +
-    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n` +
-    `8️⃣ 🎁 स्पेशल डिस्काउंट ऑफर (Special Offer — 20% OFF)\n\n` +
-    `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या *"offer"* लिखकर पूछ सकते हैं!`
+    `7️⃣ 📞 मैनेजर डेस्क (Contact Manager Desk)\n\n` +
+    `💡 *सुझाव:* आप सीधे किसी भी कपड़े का नाम (उदा. *"saree"*, *"lehenga"*, *"blazer"*, *"kambal"*) या अपना कोई भी सवाल पूछ सकते हैं!`
   ];
 }
 

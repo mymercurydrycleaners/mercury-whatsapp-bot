@@ -234,10 +234,11 @@ function getSystemPrompt() {
 - Discounted Rates with MM20 Coupon:
   * Blanket Single (एकल कंबल): Normal ₹200 -> With MM20 (20% OFF): ₹160
   * Blanket Double (डबल कंबल): Normal ₹300 -> With MM20 (20% OFF): ₹240
-- Proactive Guidance:
-  * When a customer asks about offers, discounts, coupons, schemes, deals, or blanket/kambal dry cleaning:
-    Enthusiastically share coupon code MM20 and celebrate the 20% OFF!
-    Tell them: "बुकिंग के समय कूपन कोड MM20 बताएं और 20% छूट पाएं!"`
+- STRICT TRIGGER INSTRUCTION:
+  * DO NOT volunteer, mention, or display this offer in normal greetings (Hi, Hello), general questions, or regular garment inquiries.
+  * ONLY share the 20% OFF offer details when the customer explicitly asks about offers, discounts, coupons, schemes, promo codes, deals, or asks "koi offer hai kya"!
+  * When they DO ask, provide the full coupon details (20% OFF Blanket Dry Cleaning, Coupon Code: MM20) and ALWAYS clearly mention the validity dates: 16 October 2026 to 31 October 2026!
+  * Tell them: "बुकिंग के समय कूपन कोड MM20 बताएं और 20% छूट पाएं!"`
     : `SPECIAL PROMOTION NOTICE:
 - The 20% OFF Blanket Dry Cleaning coupon (MM20) valid from 16 Oct to 31 Oct 2026 has expired. Standard prices apply.`;
 
