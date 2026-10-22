@@ -1,7 +1,5 @@
 node_modules/
 .env
 *.log
-enquiries.json
-settings.json
 origin_*.js
 test_*.js

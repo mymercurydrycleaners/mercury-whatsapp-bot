@@ -1,0 +1,28 @@
+[
+  {
+    "id": "ENQ-MVJ152ZU-JL5I",
+    "phone": "919598752579",
+    "customerName": "Amit gupta",
+    "item": "Saree",
+    "rawQuery": "Saree ke kya price hai dry clean ka",
+    "createdAt": "2026-10-22T04:17:16.650Z",
+    "updatedAt": "2026-10-22T08:01:20.000Z",
+    "scheduledFor": "2026-10-22T08:45:00.000Z",
+    "status": "pending",
+    "reminderSentAt": null,
+    "notes": "ग्राहक ने साड़ी के रेट पूछे हैं। ऑटो-फॉलोअप तैयार है।"
+  },
+  {
+    "id": "ENQ-MVJ389BK-2K9P",
+    "phone": "919598752579",
+    "customerName": "Amit gupta",
+    "item": "Blanket",
+    "rawQuery": "Blanket dry clean ka kya rate hai",
+    "createdAt": "2026-10-22T08:01:20.000Z",
+    "updatedAt": "2026-10-22T08:01:20.000Z",
+    "scheduledFor": "2026-10-22T09:30:00.000Z",
+    "status": "pending",
+    "reminderSentAt": null,
+    "notes": "ग्राहक ने कंबल (Blanket) के रेट पूछे हैं।"
+  }
+]
