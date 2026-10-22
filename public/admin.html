@@ -1596,6 +1596,11 @@
           if (hasNew && latestNew) {
             playChime();
             toast("🔔 नई Enquiry: " + (latestNew.customerName || latestNew.phone));
+            try {
+              if (window.MercuryNative && typeof window.MercuryNative.showNotification === "function") {
+                window.MercuryNative.showNotification("🔔 नई ग्राहक Enquiry!", (latestNew.customerName || latestNew.phone) + ": " + (latestNew.rawMessage || "नई पूछताछ आई है"));
+              }
+            } catch (ne) {}
           }
         }
 
