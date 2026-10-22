@@ -16,7 +16,7 @@ let enquiries = [];
 
 const DEFAULT_SETTINGS = {
   ownerAlertPhone: process.env.OWNER_PHONE || "9151517444",
-  enableWhatsAppAlerts: true,
+  enableWhatsAppAlerts: false, // Default OFF so owner WhatsApp chat stays clean
   adminPin: process.env.ADMIN_PIN || "1744"
 };
 
