@@ -11,7 +11,56 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Mercury Pro">
 
+  <script>
+    (function() {
+      try {
+        var ua = navigator.userAgent || "";
+        var isMercuryApp = ua.indexOf("MercuryApp") !== -1;
+        var isStandalone = window.navigator.standalone === true || 
+                           (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+        var hasAppQuery = window.location.search && window.location.search.indexOf("app=android") !== -1;
+        var hasStoredApp = localStorage.getItem("mercury_is_apk") === "true";
+
+        if (isMercuryApp || hasAppQuery) {
+          localStorage.setItem("mercury_is_apk", "true");
+        }
+
+        if (isMercuryApp || isStandalone || hasAppQuery || hasStoredApp) {
+          document.documentElement.classList.add("in-native-app");
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <style>
+    /* Native App & Standalone Mode - Hide APK download prompts */
+    html.in-native-app .apk-download-element {
+      display: none !important;
+    }
+
+    .native-app-badge {
+      display: none;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    html.in-native-app .native-app-badge {
+      display: inline-flex !important;
+    }
+
+    @media (max-width: 480px) {
+      .native-app-badge span:last-child {
+        display: none;
+      }
+    }
+
     :root {
       --bg: #070d18;
       --card-bg: #0f172a;
@@ -1051,9 +1100,15 @@
       </a>
 
       <div class="nav-actions">
-        <a href="/mercury.apk" download="MercuryEnquiryApp.apk" class="action-btn btn-wa-action" style="padding: 7px 12px; font-size: 12px; text-decoration: none;" title="Download Android APK">
+        <!-- APK Download Button (Visible on web browsers; hidden inside Android APK) -->
+        <a href="/mercury.apk" download="MercuryEnquiryApp.apk" class="action-btn btn-wa-action apk-download-element" id="navApkBtn" style="padding: 7px 12px; font-size: 12px; text-decoration: none;" title="Download Android APK">
           <span>📲 APK Download</span>
         </a>
+        <!-- Native App Badge (Visible only inside Android APK App) -->
+        <div class="native-app-badge" title="Official Android App Active">
+          <span>📱</span>
+          <span>App Active</span>
+        </div>
         <div class="clock-pill">
           <span>🕒</span>
           <span id="liveClock">--:--:-- IST</span>
@@ -1073,8 +1128,8 @@
 
   <div class="main-wrap">
 
-    <!-- Android APK & App Banner -->
-    <div style="background: linear-gradient(135deg, rgba(6, 95, 70, 0.6) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.3);">
+    <!-- Android APK & App Banner (Visible on web browsers; hidden inside Android APK or when dismissed) -->
+    <div id="apkDownloadBanner" class="apk-download-element" style="background: linear-gradient(135deg, rgba(6, 95, 70, 0.6) 0%, rgba(15, 23, 42, 0.9) 100%); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.3); position: relative;">
       <div style="display: flex; align-items: center; gap: 12px;">
         <span style="font-size: 32px;">🤖</span>
         <div>
@@ -1082,10 +1137,11 @@
           <div style="font-size: 12px; color: #cbd5e1;">अपने Android फ़ोन पर असली मोबाइल ऐप इनस्टॉल करें • 100% Mobile Responsive & Fast</div>
         </div>
       </div>
-      <div style="display: flex; gap: 8px;">
+      <div style="display: flex; gap: 8px; align-items: center;">
         <a href="/mercury.apk" download="MercuryEnquiryApp.apk" class="pwa-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: #10b981; color: #ffffff; padding: 10px 18px; font-size: 13.5px; border-radius: 8px;">
           <span>⬇️ Download APK (Direct)</span>
         </a>
+        <button onclick="dismissApkBanner()" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.2s;" title="Dismiss">&times;</button>
       </div>
     </div>
 
@@ -1377,6 +1433,22 @@
       setTimeout(() => err.style.display = "none", 3000);
     }
 
+    // Dismiss APK Banner helper
+    function dismissApkBanner() {
+      const banner = document.getElementById("apkDownloadBanner");
+      if (banner) banner.style.display = "none";
+      try {
+        localStorage.setItem("mercury_apk_banner_dismissed", "true");
+      } catch (e) {}
+    }
+
+    try {
+      if (localStorage.getItem("mercury_apk_banner_dismissed") === "true") {
+        const banner = document.getElementById("apkDownloadBanner");
+        if (banner) banner.style.display = "none";
+      }
+    } catch (e) {}
+
     // Boot App
     function bootApp() {
       soundEnabled = localStorage.getItem("mercury_sound") !== "false";
@@ -1400,7 +1472,8 @@
     window.addEventListener("beforeinstallprompt", (e) => {
       e.preventDefault();
       deferredInstallPrompt = e;
-      document.getElementById("pwaBanner").style.display = "flex";
+      const pb = document.getElementById("pwaBanner");
+      if (pb) pb.style.display = "flex";
     });
 
     document.getElementById("pwaInstallBtn")?.addEventListener("click", async () => {
