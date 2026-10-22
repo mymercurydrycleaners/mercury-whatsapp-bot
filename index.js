@@ -1,13 +1,24 @@
 // index.js
-// Main server: receives WhatsApp webhook events and sends replies
-// using the WhatsApp Cloud API.
+// Main server: receives WhatsApp webhook events, sends AI replies,
+// serves Live Enquiry Dashboard App (PWA) & sends Real-Time Owner Alerts.
 
 require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const axios = require("axios");
 const { handleMessage } = require("./conversation");
-const { processPendingReminders, getEnquiryStats } = require("./reminders");
+const {
+  processPendingReminders,
+  getEnquiryStats,
+  getAllEnquiries,
+  getEnquiryById,
+  resolveEnquiry,
+  deleteEnquiry,
+  sendManualReminder,
+  getSettings,
+  saveSettings,
+  setOwnerNotifier
+} = require("./reminders");
 
 const app = express();
 app.use(express.json());
@@ -23,20 +34,178 @@ const {
 const GRAPH_API_URL = `https://graph.facebook.com/v20.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
 
 // ---------------------------------------------------------------------
-// Serve static assets (images used in bot replies, e.g. location banner)
-// Accessible at: <your-render-url>/assets/<filename>
+// Static assets & PWA files
 // ---------------------------------------------------------------------
 app.use("/assets", express.static(path.join(__dirname, "assets")));
+app.use(express.static(path.join(__dirname, "public")));
+
+// ---------------------------------------------------------------------
+// Owner Real-Time WhatsApp Alert Handler
+// ---------------------------------------------------------------------
+const ownerAlertCooldown = new Map();
+
+setOwnerNotifier(async (enquiry, isNew) => {
+  try {
+    const settings = getSettings();
+    if (!settings.enableWhatsAppAlerts || !settings.ownerAlertPhone) return;
+
+    const ownerPhone = settings.ownerAlertPhone.replace(/[^0-9]/g, "");
+    if (!ownerPhone || ownerPhone === enquiry.phone) return;
+
+    // Cooldown of 3 minutes per customer phone to avoid rapid multiple alerts
+    const lastAlert = ownerAlertCooldown.get(enquiry.phone) || 0;
+    if (Date.now() - lastAlert < 3 * 60 * 1000) return;
+    ownerAlertCooldown.set(enquiry.phone, Date.now());
+
+    const now = new Date();
+    const timeIST = now.toLocaleTimeString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true
+    });
+    const dateIST = now.toLocaleDateString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      day: "numeric",
+      month: "short"
+    });
+
+    const customerDisplay = enquiry.customerName
+      ? `${enquiry.customerName} (+${enquiry.phone})`
+      : `+${enquiry.phone}`;
+
+    const alertBody =
+      `🔔 *नई ग्राहक Enquiry अलर्ट!*\n` +
+      `*My Mercury Dry Cleaners, Mahoba*\n\n` +
+      `👤 *ग्राहक:* ${customerDisplay}\n` +
+      `🏷️ *विषय:* ${enquiry.item}\n` +
+      `💬 *मैसेज:* "${enquiry.rawQuery || enquiry.item}"\n` +
+      `🕒 *समय:* ${dateIST}, ${timeIST}\n\n` +
+      `👉 *ग्राहक को तुरंत WhatsApp करें:*\nhttps://wa.me/${enquiry.phone}\n\n` +
+      `📱 *लाइव Enquiry App देखें:*\n${PUBLIC_BASE_URL}/admin`;
+
+    await sendWhatsAppText(ownerPhone, alertBody);
+    console.log(`[Alert] Sent instant WhatsApp notification to owner (${ownerPhone}) for enquiry ${enquiry.id}`);
+  } catch (err) {
+    console.error("[Alert] Error notifying owner:", err.message);
+  }
+});
+
+// ---------------------------------------------------------------------
+// Admin Web App Pages & Redirects
+// ---------------------------------------------------------------------
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
+});
+app.get("/dashboard", (req, res) => res.redirect("/admin"));
+app.get("/app", (req, res) => res.redirect("/admin"));
 
 // ---------------------------------------------------------------------
 // Health check
 // ---------------------------------------------------------------------
 app.get("/", (req, res) => {
-  res.send("My Mercury Dry Cleaners WhatsApp bot is running.");
+  res.send("My Mercury Dry Cleaners WhatsApp bot is running. Visit /admin for Enquiry App.");
 });
 
 // ---------------------------------------------------------------------
-// Enquiry Reminders & Keep-Alive endpoints
+// Dashboard & Enquiry API Endpoints
+// ---------------------------------------------------------------------
+
+// Verify Admin PIN
+app.post("/api/auth/verify", (req, res) => {
+  const { pin } = req.body || {};
+  const currentPin = getSettings().adminPin || "1744";
+  if (pin === currentPin) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false, error: "Incorrect PIN" });
+  }
+});
+
+// Get enquiries list and stats
+app.get("/api/enquiries", (req, res) => {
+  res.json({
+    stats: getEnquiryStats(),
+    enquiries: getAllEnquiries(),
+    settings: {
+      ownerAlertPhone: getSettings().ownerAlertPhone,
+      enableWhatsAppAlerts: getSettings().enableWhatsAppAlerts
+    }
+  });
+});
+
+// Mark enquiry as resolved
+app.post("/api/enquiries/:id/resolve", (req, res) => {
+  resolveEnquiry(req.params.id);
+  res.json({ success: true, stats: getEnquiryStats() });
+});
+
+// Send manual WhatsApp reminder from dashboard
+app.post("/api/enquiries/:id/remind", async (req, res) => {
+  try {
+    const result = await sendManualReminder(req.params.id, sendWhatsAppText);
+    res.json({ success: true, ...result, stats: getEnquiryStats() });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete an enquiry
+app.post("/api/enquiries/:id/delete", (req, res) => {
+  const deleted = deleteEnquiry(req.params.id);
+  res.json({ success: deleted, stats: getEnquiryStats() });
+});
+
+// Get current settings
+app.get("/api/settings", (req, res) => {
+  const s = getSettings();
+  res.json({
+    ownerAlertPhone: s.ownerAlertPhone,
+    enableWhatsAppAlerts: s.enableWhatsAppAlerts
+  });
+});
+
+// Update settings
+app.post("/api/settings", (req, res) => {
+  const { ownerAlertPhone, enableWhatsAppAlerts, adminPin } = req.body || {};
+  const toUpdate = {};
+  if (typeof ownerAlertPhone === "string") toUpdate.ownerAlertPhone = ownerAlertPhone.trim();
+  if (typeof enableWhatsAppAlerts === "boolean") toUpdate.enableWhatsAppAlerts = enableWhatsAppAlerts;
+  if (adminPin && String(adminPin).trim()) toUpdate.adminPin = String(adminPin).trim();
+
+  const updated = saveSettings(toUpdate);
+  res.json({
+    success: true,
+    ownerAlertPhone: updated.ownerAlertPhone,
+    enableWhatsAppAlerts: updated.enableWhatsAppAlerts
+  });
+});
+
+// Send a test WhatsApp alert to owner's phone
+app.post("/api/test-alert", async (req, res) => {
+  try {
+    const s = getSettings();
+    const targetPhone = (req.body?.phone || s.ownerAlertPhone || "").replace(/[^0-9]/g, "");
+    if (!targetPhone) {
+      return res.status(400).json({ error: "Owner phone number is not configured" });
+    }
+
+    const testMsg =
+      `🔔 *टेस्ट अलर्ट (Test Alert)*\n` +
+      `*My Mercury Dry Cleaners WhatsApp Bot*\n\n` +
+      `✅ आपका WhatsApp Enquiry अलर्ट सिस्टम सफलतापूर्वक चालू है!\n` +
+      `जब भी कोई ग्राहक कंबल, साड़ी, कोट आदि के बारे में पूछेगा, आपको ऐसा ही तुरंत नोटिफिकेशन मिलेगा।\n\n` +
+      `📱 लाइव ऐप: ${PUBLIC_BASE_URL}/admin`;
+
+    await sendWhatsAppText(targetPhone, testMsg);
+    res.json({ success: true, sentTo: targetPhone });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------------------------------------------------------------------
+// Reminders Keep-Alive & Runner endpoints
 // ---------------------------------------------------------------------
 app.get("/reminders/stats", (req, res) => {
   res.json({
@@ -93,6 +262,8 @@ app.post("/webhook", async (req, res) => {
     }
 
     const from = message.from; // customer's phone number
+    const contact = value?.contacts?.[0];
+    const customerName = contact?.profile?.name || "";
 
     // Extract text from text message, interactive button, quick reply, or audio voice note
     let text = "";
@@ -124,9 +295,9 @@ app.post("/webhook", async (req, res) => {
       text = message.button?.text || "";
     }
 
-    console.log(`Incoming message from ${from}: "${text}" (Voice: ${isVoiceMessage})`);
+    console.log(`Incoming message from ${from} (${customerName}): "${text}" (Voice: ${isVoiceMessage})`);
 
-    const replies = await handleMessage(from, text);
+    const replies = await handleMessage(from, text, { customerName, isVoiceMessage });
 
     for (let i = 0; i < replies.length; i++) {
       let reply = replies[i];
@@ -276,6 +447,7 @@ async function sendWhatsAppImage(to, link, caption) {
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
+  console.log(`Live Enquiry Dashboard available at: /admin`);
 
   // Background processor: Check and send pending enquiry reminders every 5 minutes
   setInterval(async () => {

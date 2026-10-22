@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="primary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+
+  <!-- Outer Ring Accent -->
+  <circle cx="256" cy="256" r="215" fill="none" stroke="url(#primary)" stroke-width="6" opacity="0.4"/>
+
+  <!-- Hanger Hook -->
+  <path d="M 256 120 C 235 120 220 135 220 155 C 220 175 235 185 248 195 L 248 215 L 264 215 L 264 192 C 275 183 284 172 284 155 C 284 135 269 120 256 120 Z" fill="url(#accent)"/>
+
+  <!-- Hanger Triangle Body -->
+  <path d="M 256 215 L 120 300 C 110 306 112 320 125 320 L 387 320 C 400 320 402 306 392 300 Z" fill="none" stroke="url(#primary)" stroke-width="20" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- Iron Sparkle & Steam Bubbles -->
+  <circle cx="256" cy="265" r="14" fill="url(#accent)" filter="url(#glow)"/>
+  <circle cx="215" cy="285" r="9" fill="url(#primary)"/>
+  <circle cx="297" cy="285" r="9" fill="url(#primary)"/>
+
+  <!-- Sparkle Stars -->
+  <path d="M 370 140 Q 370 160 390 160 Q 370 160 370 180 Q 370 160 350 160 Q 370 160 370 140 Z" fill="url(#accent)" filter="url(#glow)"/>
+  <path d="M 140 180 Q 140 195 155 195 Q 140 195 140 210 Q 140 195 125 195 Q 140 195 140 180 Z" fill="url(#accent)"/>
+
+  <!-- Badge Text: MM -->
+  <text x="256" y="415" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="52" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="4">MERCURY</text>
+  <text x="256" y="450" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="600" fill="#10b981" text-anchor="middle" letter-spacing="3">DRY CLEANERS</text>
+</svg>

@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>My Mercury — Live Enquiry Dashboard</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mercury App">
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card-bg: #151f32;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --wa-color: #25d366;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    /* Header */
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 12px 16px;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: #022c22;
+      padding: 4px;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .brand-info h1 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .brand-info .live-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--primary);
+      animation: pulse 1.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--text-main);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #334155;
+    }
+
+    .icon-btn.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 900px;
+      margin: 16px auto;
+      padding: 0 16px;
+    }
+
+    /* PWA Install Banner */
+    .install-banner {
+      display: none;
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 15px rgba(5, 150, 105, 0.25);
+    }
+
+    .install-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .install-info span {
+      font-size: 26px;
+    }
+
+    .install-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .install-desc {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    .install-btn {
+      background: #ffffff;
+      color: #065f46;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Notification Permission Alert */
+    .notif-banner {
+      display: none;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .notif-text {
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .notif-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .stat-card.today .stat-value { color: var(--accent); }
+    .stat-card.pending .stat-value { color: #38bdf8; }
+    .stat-card.resolved .stat-value { color: var(--primary); }
+
+    /* Controls Bar: Search & Filter */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-chip {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-chip.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    /* Enquiries Feed */
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .feed-count {
+      color: var(--text-main);
+    }
+
+    .enquiry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .enquiry-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: border-color 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .enquiry-card.is-new {
+      animation: highlightCard 2s ease-out;
+      border-color: var(--primary);
+    }
+
+    @keyframes highlightCard {
+      0% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.6); }
+      100% { box-shadow: none; }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .customer-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .customer-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .customer-phone {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-pending {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-sent {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .badge-resolved {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-expired {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Inquiry content */
+    .inquiry-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #a7f3d0;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .raw-query {
+      background: #0f172a;
+      border-left: 3px solid var(--accent);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+      font-style: italic;
+      word-break: break-word;
+    }
+
+    .time-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      border-top: 1px solid #1e293b;
+      padding-top: 8px;
+    }
+
+    /* Card Action Buttons */
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .action-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-wa {
+      background: #25d366;
+      color: #ffffff;
+    }
+
+    .btn-wa:hover {
+      background: #1ebe57;
+    }
+
+    .btn-call {
+      background: #3b82f6;
+      color: #ffffff;
+    }
+
+    .btn-call:hover {
+      background: #2563eb;
+    }
+
+    .btn-remind {
+      background: #f59e0b;
+      color: #000000;
+      font-weight: 700;
+    }
+
+    .btn-remind:hover {
+      background: #d97706;
+    }
+
+    .btn-done {
+      background: #10b981;
+      color: #ffffff;
+    }
+
+    .btn-done:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--text-muted);
+    }
+
+    .btn-secondary:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      background: var(--card-bg);
+      border: 1px dashed var(--card-border);
+      border-radius: var(--radius);
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(5px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal {
+      background: #151f32;
+      border: 1px solid #334155;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #0b1120;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #ffffff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary);
+    }
+
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0b1120;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      margin-bottom: 16px;
+    }
+
+    .switch-info .title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .switch-info .desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Switch toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: var(--primary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e293b;
+      border: 1px solid var(--primary);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      z-index: 300;
+      transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Lock Screen Modal */
+    #lockScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0b1120;
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .pin-box {
+      background: #151f32;
+      border: 1px solid #334155;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 360px;
+      padding: 30px 24px;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Lock Screen for Admin PIN -->
+  <div id="lockScreen">
+    <div class="pin-box">
+      <img src="/icon.svg" width="60" height="60" style="margin-bottom: 12px;" alt="Mercury">
+      <h2 style="font-size: 20px; margin-bottom: 6px;">Mercury Enquiry App</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+        कृपया एडमिन पिन दर्ज करें (Default: <b>1744</b>)
+      </p>
+      <input type="password" id="pinInput" class="form-input" placeholder="4 अंकों का पिन दर्ज करें" maxlength="8" style="text-align: center; font-size: 22px; letter-spacing: 6px; margin-bottom: 16px;">
+      <button class="btn btn-done" style="width: 100%; padding: 12px;" onclick="verifyPin()">
+        लॉगिन करें 🔓
+      </button>
+      <p id="pinError" style="color: var(--danger); font-size: 12px; margin-top: 10px; display: none;">
+        गलत पिन! कृपया पुनः प्रयास करें।
+      </p>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <a href="#" class="brand">
+        <img src="/icon.svg" class="brand-logo" alt="Mercury">
+        <div class="brand-info">
+          <h1>My Mercury Dry Cleaners</h1>
+          <div class="live-badge">
+            <span class="pulse-dot"></span>
+            <span>Live Enquiry Dashboard</span>
+          </div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button class="icon-btn" id="soundBtn" onclick="toggleSound()" title="Sound Alerts">
+          🔔
+        </button>
+        <button class="icon-btn" onclick="openSettings()" title="Settings">
+          ⚙️
+        </button>
+        <button class="icon-btn" onclick="fetchData(true)" title="Refresh Now">
+          🔄
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- PWA Install Banner -->
+    <div class="install-banner" id="installBanner">
+      <div class="install-info">
+        <span>📲</span>
+        <div>
+          <div class="install-title">Mercury Enquiry App इनस्टॉल करें</div>
+          <div class="install-desc">अपने फ़ोन की होम स्क्रीन पर ऐप की तरह जोड़ें</div>
+        </div>
+      </div>
+      <button class="install-btn" id="installBtn">Install App</button>
+    </div>
+
+    <!-- Notification Permission Alert -->
+    <div class="notif-banner" id="notifBanner">
+      <div class="notif-text">
+        🔔 नई पूछताछ आने पर तुरंत मोबाइल नोटिफिकेशन पाने के लिए अनुमति दें।
+      </div>
+      <button class="notif-btn" onclick="requestNotificationPermission()">अनुमति दें</button>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <span>कुल Enquiries</span>
+          <span>📥</span>
+        </div>
+        <div class="stat-value" id="statTotal">0</div>
+      </div>
+      <div class="stat-card today">
+        <div class="stat-header">
+          <span>आज की Enquiries</span>
+          <span>🌟</span>
+        </div>
+        <div class="stat-value" id="statToday">0</div>
+      </div>
+      <div class="stat-card pending">
+        <div class="stat-header">
+          <span>Pending फॉलो-अप</span>
+          <span>⏳</span>
+        </div>
+        <div class="stat-value" id="statPending">0</div>
+      </div>
+      <div class="stat-card resolved">
+        <div class="stat-header">
+          <span>सफल / Resolved</span>
+          <span>✅</span>
+        </div>
+        <div class="stat-value" id="statResolved">0</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls">
+      <input type="text" id="searchInput" class="search-input" placeholder="🔍 ग्राहक का नाम, मोबाइल नंबर या कपड़ा खोजें..." oninput="filterEnquiries()">
+      <div class="filter-tabs">
+        <button class="filter-chip active" onclick="setFilter('all', this)">सभी (All)</button>
+        <button class="filter-chip" onclick="setFilter('pending', this)">🟡 Pending</button>
+        <button class="filter-chip" onclick="setFilter('sent', this)">📩 Follow-up Sent</button>
+        <button class="filter-chip" onclick="setFilter('resolved', this)">✅ Resolved</button>
+      </div>
+    </div>
+
+    <!-- Feed Header -->
+    <div class="feed-header">
+      <span>हाल ही में आई पूछताछ</span>
+      <span class="feed-count" id="displayCount">0 रिकॉर्ड</span>
+    </div>
+
+    <!-- Enquiries Feed -->
+    <div class="enquiry-list" id="enquiryList">
+      <div class="empty-state">
+        <div class="empty-icon">⏳</div>
+        <div>डेटा लोड हो रहा है...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title">⚙️ ऐप सेटिंग्स (Settings)</h3>
+        <button class="close-btn" onclick="closeSettings()">&times;</button>
+      </div>
+
+      <div class="switch-container">
+        <div class="switch-info">
+          <div class="title">WhatsApp अलर्ट नोटिफिकेशन</div>
+          <div class="desc">नई enquiry आते ही आपके WhatsApp पर तुरंत मैसेज जाएगा</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="settingAlertToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">मालिक का WhatsApp नंबर (Alert Phone):</label>
+        <input type="text" id="settingOwnerPhone" class="form-input" placeholder="उदा. 9151517444 या 91XXXXXXXXXX">
+        <small style="color: var(--text-muted); font-size: 11px; margin-top: 4px; display: block;">
+          इस नंबर पर नई enquiry आते ही तुरंत WhatsApp अलर्ट भेजा जाएगा।
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">नया एडमिन पिन (Admin PIN):</label>
+        <input type="password" id="settingPin" class="form-input" placeholder="नया पिन (वैकल्पिक)">
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="testBellSound()">
+          🔔 घंटी टेस्ट करें
+        </button>
+        <button class="btn btn-wa" style="flex: 1;" onclick="sendTestAlert()">
+          📲 टेस्ट अलर्ट भेजें
+        </button>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="closeSettings()">रद्द करें</button>
+        <button class="btn btn-done" style="flex: 1;" onclick="saveSettings()">सेव करें ✅</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMsg">Updated</span>
+  </div>
+
+  <script>
+    // App State
+    let allEnquiries = [];
+    let currentFilter = 'all';
+    let soundEnabled = true;
+    let knownEnquiryIds = new Set();
+    let deferredPrompt = null;
+    let isFirstLoad = true;
+
+    // PIN Authentication
+    const savedPin = localStorage.getItem("mercury_admin_pin");
+    if (!savedPin) {
+      document.getElementById("lockScreen").style.display = "flex";
+    } else {
+      verifySavedPin(savedPin);
+    }
+
+    async function verifyPin() {
+      const pin = document.getElementById("pinInput").value.trim();
+      if (!pin) return;
+      try {
+        const res = await fetch("/api/auth/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem("mercury_admin_pin", pin);
+          document.getElementById("lockScreen").style.display = "none";
+          initApp();
+        } else {
+          showPinError();
+        }
+      } catch (e) {
+        // Fallback for default PIN
+        if (pin === "1744") {
+          localStorage.setItem("mercury_admin_pin", pin);
+          document.getElementById("lockScreen").style.display = "none";
+          initApp();
+        } else {
+          showPinError();
+        }
+      }
+    }
+
+    async function verifySavedPin(pin) {
+      try {
+        const res = await fetch("/api/auth/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById("lockScreen").style.display = "none";
+          initApp();
+        } else {
+          localStorage.removeItem("mercury_admin_pin");
+          document.getElementById("lockScreen").style.display = "flex";
+        }
+      } catch (e) {
+        document.getElementById("lockScreen").style.display = "none";
+        initApp();
+      }
+    }
+
+    function showPinError() {
+      const err = document.getElementById("pinError");
+      err.style.display = "block";
+      setTimeout(() => err.style.display = "none", 3000);
+    }
+
+    // App Initialization
+    function initApp() {
+      soundEnabled = localStorage.getItem("mercury_sound") !== "false";
+      updateSoundBtn();
+
+      // Check notification permission
+      if ("Notification" in window) {
+        if (Notification.permission === "default") {
+          document.getElementById("notifBanner").style.display = "flex";
+        }
+      }
+
+      // Initial Fetch & Start Polling (every 4 seconds)
+      fetchData();
+      setInterval(() => fetchData(false), 4000);
+    }
+
+    // PWA Service Worker Registration
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+
+    // PWA Install Prompt Listener
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById("installBanner").style.display = "flex";
+    });
+
+    document.getElementById("installBtn")?.addEventListener("click", async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === "accepted") {
+          document.getElementById("installBanner").style.display = "none";
+        }
+        deferredPrompt = null;
+      }
+    });
+
+    function requestNotificationPermission() {
+      if ("Notification" in window) {
+        Notification.requestPermission().then((perm) => {
+          document.getElementById("notifBanner").style.display = "none";
+          if (perm === "granted") {
+            showToast("नोटिफिकेशन चालू कर दिया गया! 🔔");
+          }
+        });
+      }
+    }
+
+    // Web Audio API Bell Chime (Dual Tone Pleasant Bell)
+    function playChime() {
+      if (!soundEnabled) return;
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const now = ctx.currentTime;
+
+        // Tone 1 (D5)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(587.33, now);
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc1.start(now);
+        osc1.stop(now + 0.6);
+
+        // Tone 2 (A5)
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(880, now + 0.14);
+        gain2.gain.setValueAtTime(0.35, now + 0.14);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc2.start(now + 0.14);
+        osc2.stop(now + 0.85);
+
+        // Vibrate phone if mobile
+        if ("vibrate" in navigator) {
+          navigator.vibrate([200, 100, 200]);
+        }
+      } catch (e) {
+        console.warn("Audio chime error:", e);
+      }
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem("mercury_sound", soundEnabled);
+      updateSoundBtn();
+      if (soundEnabled) {
+        playChime();
+        showToast("साउंड अलर्ट चालू (ON) 🔔");
+      } else {
+        showToast("साउंड अलर्ट बंद (OFF) 🔕");
+      }
+    }
+
+    function updateSoundBtn() {
+      const btn = document.getElementById("soundBtn");
+      if (soundEnabled) {
+        btn.textContent = "🔔";
+        btn.classList.add("active");
+        btn.title = "साउंड चालू है";
+      } else {
+        btn.textContent = "🔕";
+        btn.classList.remove("active");
+        btn.title = "साउंड बंद है";
+      }
+    }
+
+    function testBellSound() {
+      playChime();
+      showToast("घंटी बजाई गई! 🔔");
+    }
+
+    // Fetch Enquiries & Stats
+    async function fetchData(showFeedback = false) {
+      try {
+        const res = await fetch("/api/enquiries");
+        if (!res.ok) return;
+        const data = await res.json();
+
+        // Update stats
+        if (data.stats) {
+          document.getElementById("statTotal").textContent = data.stats.total || 0;
+          document.getElementById("statToday").textContent = data.stats.today || 0;
+          document.getElementById("statPending").textContent = data.stats.pending || 0;
+          document.getElementById("statResolved").textContent = data.stats.resolved || 0;
+        }
+
+        const newEnquiries = data.enquiries || [];
+
+        // Check for new incoming enquiry
+        if (!isFirstLoad) {
+          let hasNew = false;
+          let latestNew = null;
+          newEnquiries.forEach((item) => {
+            if (!knownEnquiryIds.has(item.id)) {
+              hasNew = true;
+              latestNew = item;
+            }
+          });
+
+          if (hasNew && latestNew) {
+            playChime();
+            showToast("🔔 नई Enquiry आई: " + latestNew.item);
+
+            // Trigger System Notification
+            if ("Notification" in window && Notification.permission === "granted") {
+              const nameOrPhone = latestNew.customerName ? `${latestNew.customerName} (${latestNew.phone})` : latestNew.phone;
+              new Notification("🔔 नई ग्राहक Enquiry!", {
+                body: `${nameOrPhone}: "${latestNew.rawQuery || latestNew.item}"`,
+                icon: "/icon.svg",
+                tag: latestNew.id
+              });
+            }
+          }
+        }
+
+        // Cache known IDs
+        knownEnquiryIds = new Set(newEnquiries.map((e) => e.id));
+        allEnquiries = newEnquiries;
+        isFirstLoad = false;
+
+        renderEnquiries();
+
+        if (showFeedback) {
+          showToast("डेटा रिफ्रेश हो गया! 🔄");
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      }
+    }
+
+    // Filter Logic
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll(".filter-chip").forEach((c) => c.classList.remove("active"));
+      btn.classList.add("active");
+      renderEnquiries();
+    }
+
+    function filterEnquiries() {
+      renderEnquiries();
+    }
+
+    // Render Enquiries Cards
+    function renderEnquiries() {
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      const listEl = document.getElementById("enquiryList");
+
+      let filtered = allEnquiries.filter((item) => {
+        // Status filter
+        if (currentFilter !== "all" && item.status !== currentFilter) {
+          return false;
+        }
+        // Search query
+        if (query) {
+          const matchPhone = (item.phone || "").toLowerCase().includes(query);
+          const matchName = (item.customerName || "").toLowerCase().includes(query);
+          const matchItem = (item.item || "").toLowerCase().includes(query);
+          const matchRaw = (item.rawQuery || "").toLowerCase().includes(query);
+          return matchPhone || matchName || matchItem || matchRaw;
+        }
+        return true;
+      });
+
+      document.getElementById("displayCount").textContent = `${filtered.length} रिकॉर्ड`;
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div style="font-size: 15px; font-weight: 600; color: #ffffff; margin-bottom: 4px;">कोई पूछताछ नहीं मिली</div>
+            <div style="font-size: 12px;">जैसे ही कोई नया ग्राहक WhatsApp पर मैसेज करेगा, वह यहाँ तुरंत दिखाई देगा।</div>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map((item) => {
+        const timeStr = formatISTTime(item.createdAt);
+        const relativeTime = getRelativeTime(item.createdAt);
+
+        let badgeClass = "badge-pending";
+        let badgeText = "🟡 Pending";
+        if (item.status === "sent") {
+          badgeClass = "badge-sent";
+          badgeText = "📩 Sent";
+        } else if (item.status === "resolved") {
+          badgeClass = "badge-resolved";
+          badgeText = "✅ Resolved";
+        } else if (item.status === "expired") {
+          badgeClass = "badge-expired";
+          badgeText = "⏰ Expired";
+        }
+
+        const cleanPhone = String(item.phone).replace(/[^0-9]/g, "");
+        const displayName = item.customerName ? `${escapeHtml(item.customerName)}` : `ग्राहक (+${cleanPhone})`;
+
+        return `
+          <div class="enquiry-card" id="card-${item.id}">
+            <div class="card-top">
+              <div class="customer-info">
+                <div class="customer-name">
+                  <span>👤</span>
+                  <span>${displayName}</span>
+                </div>
+                <div class="customer-phone">📞 +${cleanPhone}</div>
+              </div>
+              <span class="badge ${badgeClass}">${badgeText}</span>
+            </div>
+
+            <div class="inquiry-item">
+              <span>🏷️</span>
+              <span><b>पूछताछ:</b> ${escapeHtml(item.item || 'कपड़ों की सफाई')}</span>
+            </div>
+
+            ${item.rawQuery ? `
+              <div class="raw-query">
+                "${escapeHtml(item.rawQuery)}"
+              </div>
+            ` : ''}
+
+            <div class="time-info">
+              <span>🕒 ${timeStr} (${relativeTime})</span>
+              ${item.scheduledFor && item.status === 'pending' ? `<span>⏳ Follow-up: ${formatISTTime(item.scheduledFor)}</span>` : ''}
+            </div>
+
+            <div class="action-grid">
+              <a href="https://wa.me/${cleanPhone}" target="_blank" class="btn btn-wa">
+                <span>💬 WhatsApp</span>
+              </a>
+              <a href="tel:+${cleanPhone}" class="btn btn-call">
+                <span>📞 Call</span>
+              </a>
+              <button class="btn btn-remind" onclick="sendReminder('${item.id}', '${cleanPhone}')" title="Send Reminder Now">
+                <span>⚡ Follow-up</span>
+              </button>
+              ${item.status !== 'resolved' ? `
+                <button class="btn btn-done" onclick="resolveEnquiry('${item.id}')" title="Mark Done">
+                  <span>✅ Done</span>
+                </button>
+              ` : `
+                <button class="btn btn-secondary" onclick="deleteEnquiry('${item.id}')" title="Delete">
+                  <span>🗑️ हटाएं</span>
+                </button>
+              `}
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Actions
+    async function resolveEnquiry(id) {
+      try {
+        const res = await fetch(`/api/enquiries/${id}/resolve`, { method: "POST" });
+        if (res.ok) {
+          showToast("Enquiry Resolved ✅");
+          fetchData();
+        }
+      } catch (e) {
+        showToast("Error updating enquiry", "❌");
+      }
+    }
+
+    async function sendReminder(id, phone) {
+      if (!confirm(`क्या आप +${phone} को अभी दुकान की जानकारी और फॉलो-अप भेजना चाहते हैं?`)) return;
+      try {
+        const res = await fetch(`/api/enquiries/${id}/remind`, { method: "POST" });
+        const data = await res.json();
+        if (data.success) {
+          showToast("WhatsApp फॉलो-अप भेज दिया गया! ⚡");
+          fetchData();
+        } else {
+          showToast(data.error || "भेजने में विफल", "❌");
+        }
+      } catch (e) {
+        showToast("फॉलो-अप भेजने में त्रुटि", "❌");
+      }
+    }
+
+    async function deleteEnquiry(id) {
+      if (!confirm("क्या आप इस enquiry को हटाना चाहते हैं?")) return;
+      try {
+        const res = await fetch(`/api/enquiries/${id}/delete`, { method: "POST" });
+        if (res.ok) {
+          showToast("हटा दिया गया 🗑️");
+          fetchData();
+        }
+      } catch (e) {
+        showToast("हटाने में विफल", "❌");
+      }
+    }
+
+    // Settings Modal Functions
+    async function openSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        const data = await res.json();
+        document.getElementById("settingOwnerPhone").value = data.ownerAlertPhone || "9151517444";
+        document.getElementById("settingAlertToggle").checked = !!data.enableWhatsAppAlerts;
+        document.getElementById("settingPin").value = "";
+        document.getElementById("settingsModal").style.display = "flex";
+      } catch (e) {
+        showToast("सेटिंग्स लोड करने में विफल", "❌");
+      }
+    }
+
+    function closeSettings() {
+      document.getElementById("settingsModal").style.display = "none";
+    }
+
+    async function saveSettings() {
+      const ownerAlertPhone = document.getElementById("settingOwnerPhone").value.trim();
+      const enableWhatsAppAlerts = document.getElementById("settingAlertToggle").checked;
+      const adminPin = document.getElementById("settingPin").value.trim();
+
+      const payload = { ownerAlertPhone, enableWhatsAppAlerts };
+      if (adminPin) payload.adminPin = adminPin;
+
+      try {
+        const res = await fetch("/api/settings", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          if (adminPin) localStorage.setItem("mercury_admin_pin", adminPin);
+          showToast("सेटिंग्स सुरक्षित कर दी गईं! ✅");
+          closeSettings();
+        }
+      } catch (e) {
+        showToast("सेटिंग्स सेव करने में विफल", "❌");
+      }
+    }
+
+    async function sendTestAlert() {
+      const phone = document.getElementById("settingOwnerPhone").value.trim();
+      if (!phone) {
+        alert("कृपया पहले अपना WhatsApp नंबर दर्ज करें!");
+        return;
+      }
+      showToast("टेस्ट अलर्ट भेजा जा रहा है... ⏳");
+      try {
+        const res = await fetch("/api/test-alert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast("WhatsApp पर टेस्ट अलर्ट भेजा गया! ✅");
+        } else {
+          showToast(data.error || "टेस्ट अलर्ट विफल", "❌");
+        }
+      } catch (e) {
+        showToast("टेस्ट अलर्ट भेजने में त्रुटि", "❌");
+      }
+    }
+
+    // Formatters
+    function formatISTTime(isoStr) {
+      if (!isoStr) return "";
+      const d = new Date(isoStr);
+      return d.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      });
+    }
+
+    function getRelativeTime(isoStr) {
+      if (!isoStr) return "";
+      const diffMs = Date.now() - new Date(isoStr).getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      if (diffMins < 1) return "अभी-अभी";
+      if (diffMins < 60) return `${diffMins} मि. पहले`;
+      const diffHours = Math.floor(diffMins / 60);
+      if (diffHours < 24) return `${diffHours} घंटे पहले`;
+      const diffDays = Math.floor(diffHours / 24);
+      return `${diffDays} दिन पहले`;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showToast(msg, icon = "✅") {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastMsg").textContent = msg;
+      document.getElementById("toastIcon").textContent = icon;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+  </script>
+</body>
+</html>

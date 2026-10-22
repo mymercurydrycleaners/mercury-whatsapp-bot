@@ -1,16 +1,64 @@
 // reminders.js
-// Smart Auto-Reminder & Customer Enquiry Follow-up System
+// Smart Auto-Reminder, Enquiry Dashboard & Real-Time Alerts
 // for My Mercury Dry Cleaners WhatsApp Bot
 
 const fs = require("fs");
 const path = require("path");
 
 const DATA_FILE = path.join(__dirname, "enquiries.json");
+const SETTINGS_FILE = path.join(__dirname, "settings.json");
+
 const SHOP_PHONE = "9151517444";
 const SHOP_MAPS_URL = "https://maps.app.goo.gl/xxveghHtvhFcEq65A";
 const SHOP_ADDRESS_SHORT = "1st Floor, In front of Shukwari Bazar, Mahoba";
 
 let enquiries = [];
+
+const DEFAULT_SETTINGS = {
+  ownerAlertPhone: process.env.OWNER_PHONE || "9151517444",
+  enableWhatsAppAlerts: true,
+  adminPin: process.env.ADMIN_PIN || "1744"
+};
+
+let settings = { ...DEFAULT_SETTINGS };
+let ownerNotifierFn = null;
+
+// Load settings from disk
+function loadSettings() {
+  try {
+    if (fs.existsSync(SETTINGS_FILE)) {
+      const data = fs.readFileSync(SETTINGS_FILE, "utf8");
+      settings = { ...DEFAULT_SETTINGS, ...JSON.parse(data) };
+    } else {
+      settings = { ...DEFAULT_SETTINGS };
+      fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), "utf8");
+    }
+  } catch (err) {
+    console.error("Error loading settings.json:", err.message);
+    settings = { ...DEFAULT_SETTINGS };
+  }
+}
+
+// Save settings to disk
+function saveSettings(newSettings) {
+  try {
+    settings = { ...settings, ...newSettings };
+    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(settings, null, 2), "utf8");
+    console.log("[Settings] Updated settings.json successfully");
+    return settings;
+  } catch (err) {
+    console.error("Error saving settings.json:", err.message);
+    return settings;
+  }
+}
+
+function getSettings() {
+  return settings;
+}
+
+function setOwnerNotifier(fn) {
+  ownerNotifierFn = fn;
+}
 
 // Load existing enquiries from disk on startup
 function loadEnquiries() {
@@ -30,9 +78,9 @@ function loadEnquiries() {
 // Save enquiries to disk
 function saveEnquiries() {
   try {
-    // Keep only records from last 7 days to keep file lean and fast
-    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    enquiries = enquiries.filter((e) => new Date(e.createdAt).getTime() > sevenDaysAgo);
+    // Keep records from last 14 days
+    const fourteenDaysAgo = Date.now() - 14 * 24 * 60 * 60 * 1000;
+    enquiries = enquiries.filter((e) => new Date(e.createdAt).getTime() > fourteenDaysAgo);
     fs.writeFileSync(DATA_FILE, JSON.stringify(enquiries, null, 2), "utf8");
   } catch (err) {
     console.error("Error saving enquiries.json:", err.message);
@@ -95,16 +143,19 @@ function isAppropriateReminderTime() {
 }
 
 /**
- * Record a customer's enquiry for intelligent follow-up
+ * Record a customer's enquiry for intelligent follow-up & dashboard
  * @param {string} phone Customer phone number
  * @param {string} item Garment or service name inquired
+ * @param {object} options Extra metadata: rawQuery, customerName
  */
-function recordEnquiry(phone, item) {
-  if (!phone) return;
+function recordEnquiry(phone, item, options = {}) {
+  if (!phone) return null;
   const cleanPhone = String(phone).replace(/[^0-9]/g, "");
   const cleanItem = (item || "कपड़ों की ड्राई क्लीनिंग").trim();
+  const rawQuery = (options.rawQuery || cleanItem).trim();
+  const customerName = (options.customerName || "").trim();
 
-  // Check if there is already a recent pending or sent enquiry for this customer today
+  // Check if there is already an active enquiry for this customer today
   const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
   const existingIndex = enquiries.findIndex(
     (e) => e.phone === cleanPhone && new Date(e.createdAt).getTime() > oneDayAgo
@@ -113,45 +164,66 @@ function recordEnquiry(phone, item) {
   const now = new Date();
   const scheduledFor = calculateScheduledTime(now);
 
+  let record = null;
+  let isNew = false;
+
   if (existingIndex !== -1) {
     const existing = enquiries[existingIndex];
-    // If already sent or resolved, do not re-trigger to avoid spamming
-    if (existing.status === "sent" || existing.status === "resolved") {
-      return;
-    }
-    // Update existing pending enquiry with latest item inquired
+    // If recent (last 10 minutes) and same item, update timestamp and raw query
     existing.item = cleanItem;
+    existing.rawQuery = rawQuery;
+    if (customerName && !existing.customerName) existing.customerName = customerName;
     existing.updatedAt = now.toISOString();
-    existing.scheduledFor = scheduledFor.toISOString();
+
+    if (existing.status === "pending") {
+      existing.scheduledFor = scheduledFor.toISOString();
+    }
+    record = existing;
     saveEnquiries();
-    return;
+  } else {
+    isNew = true;
+    const id = "ENQ-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    record = {
+      id,
+      phone: cleanPhone,
+      customerName,
+      item: cleanItem,
+      rawQuery,
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+      scheduledFor: scheduledFor.toISOString(),
+      status: "pending",
+      reminderSentAt: null,
+      notes: ""
+    };
+    enquiries.unshift(record);
+    saveEnquiries();
+    console.log(`[Reminder] Recorded new enquiry ${id} for ${cleanPhone} (${cleanItem})`);
   }
 
-  // Create new enquiry record
-  enquiries.push({
-    phone: cleanPhone,
-    item: cleanItem,
-    createdAt: now.toISOString(),
-    scheduledFor: scheduledFor.toISOString(),
-    status: "pending",
-    reminderSentAt: null
-  });
+  // Trigger real-time alert to owner
+  if (ownerNotifierFn && typeof ownerNotifierFn === "function") {
+    try {
+      ownerNotifierFn(record, isNew);
+    } catch (err) {
+      console.warn("Owner alert error:", err.message);
+    }
+  }
 
-  saveEnquiries();
-  console.log(`[Reminder] Recorded enquiry for ${cleanPhone} (${cleanItem}), scheduled for ${scheduledFor.toISOString()}`);
+  return record;
 }
 
 /**
- * Mark enquiry as resolved/cancelled (e.g. when customer orders or speaks with manager)
- * @param {string} phone Customer phone number
+ * Mark enquiry as resolved/cancelled
+ * @param {string} phoneOrId Customer phone or enquiry ID
  */
-function resolveEnquiry(phone) {
-  if (!phone) return;
-  const cleanPhone = String(phone).replace(/[^0-9]/g, "");
+function resolveEnquiry(phoneOrId) {
+  if (!phoneOrId) return;
+  const clean = String(phoneOrId).replace(/[^0-9a-zA-Z_-]/g, "");
   let updated = false;
 
   enquiries.forEach((e) => {
-    if (e.phone === cleanPhone && e.status === "pending") {
+    if ((e.phone === clean || e.id === clean) && e.status !== "resolved") {
       e.status = "resolved";
       e.resolvedAt = new Date().toISOString();
       updated = true;
@@ -160,8 +232,22 @@ function resolveEnquiry(phone) {
 
   if (updated) {
     saveEnquiries();
-    console.log(`[Reminder] Resolved enquiry for ${cleanPhone}`);
+    console.log(`[Reminder] Resolved enquiry for ${clean}`);
   }
+}
+
+/**
+ * Delete enquiry by ID
+ */
+function deleteEnquiry(id) {
+  if (!id) return false;
+  const initialLen = enquiries.length;
+  enquiries = enquiries.filter((e) => e.id !== id);
+  if (enquiries.length !== initialLen) {
+    saveEnquiries();
+    return true;
+  }
+  return false;
 }
 
 /**
@@ -181,8 +267,23 @@ function getReminderMessage(item) {
 }
 
 /**
+ * Send manual reminder right now from the admin dashboard
+ */
+async function sendManualReminder(id, sendWhatsAppTextFn) {
+  if (!sendWhatsAppTextFn) throw new Error("WhatsApp sender function not available");
+  const enquiry = enquiries.find((e) => e.id === id);
+  if (!enquiry) throw new Error("Enquiry not found");
+
+  const msg = getReminderMessage(enquiry.item);
+  await sendWhatsAppTextFn(enquiry.phone, msg);
+  enquiry.status = "sent";
+  enquiry.reminderSentAt = new Date().toISOString();
+  saveEnquiries();
+  return { success: true, message: "Reminder sent successfully" };
+}
+
+/**
  * Process all due pending reminders and send WhatsApp messages
- * @param {Function} sendWhatsAppTextFn Function to send text message (to, text)
  */
 async function processPendingReminders(sendWhatsAppTextFn) {
   if (!sendWhatsAppTextFn) return;
@@ -232,21 +333,49 @@ async function processPendingReminders(sendWhatsAppTextFn) {
  * Get stats of current enquiries
  */
 function getEnquiryStats() {
+  const total = enquiries.length;
   const pending = enquiries.filter((e) => e.status === "pending").length;
   const sent = enquiries.filter((e) => e.status === "sent").length;
   const resolved = enquiries.filter((e) => e.status === "resolved").length;
-  const total = enquiries.length;
-  return { total, pending, sent, resolved };
+
+  // Today's count in IST
+  const todayStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  const today = enquiries.filter((e) => {
+    try {
+      const dStr = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date(e.createdAt));
+      return dStr === todayStr;
+    } catch {
+      return false;
+    }
+  }).length;
+
+  return { total, today, pending, sent, resolved };
 }
 
-// Initial load
+function getAllEnquiries() {
+  return enquiries;
+}
+
+function getEnquiryById(id) {
+  return enquiries.find((e) => e.id === id);
+}
+
+// Initial loads
+loadSettings();
 loadEnquiries();
 
 module.exports = {
   recordEnquiry,
   resolveEnquiry,
+  deleteEnquiry,
+  sendManualReminder,
   processPendingReminders,
   getReminderMessage,
   getEnquiryStats,
-  calculateScheduledTime
+  getAllEnquiries,
+  getEnquiryById,
+  calculateScheduledTime,
+  getSettings,
+  saveSettings,
+  setOwnerNotifier
 };

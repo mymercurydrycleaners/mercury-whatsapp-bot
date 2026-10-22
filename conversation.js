@@ -459,7 +459,7 @@ function formatMatches(matches) {
   return text.trim();
 }
 
-function handleLocalRules(phone, text, lower, session) {
+function handleLocalRules(phone, text, lower, session, customerName = "") {
   // 0. Special Offer Inquiry (MM20 - 16 Oct to 31 Oct 2026)
   const offerKeywords = [
     "offer", "offers", "discount", "discounts", "coupon", "coupons", "promo",
@@ -467,7 +467,7 @@ function handleLocalRules(phone, text, lower, session) {
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerKeywords.some((o) => lower.includes(o))) {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -484,14 +484,14 @@ function handleLocalRules(phone, text, lower, session) {
   // 2. Garment Price Search FIRST (so questions like "lehenga prices on your shop" return prices)
   const matches = searchGarment(text);
   if (matches.length > 0) {
-    recordEnquiry(phone, matches[0]?.garment);
+    recordEnquiry(phone, matches[0]?.garment, { rawQuery: text, customerName });
     return [formatMatches(matches), ...menuFooter()];
   }
 
   // 3. General rate inquiry (without specific garment match)
   const generalRateTriggers = ["rate", "rates", "price", "prices", "charge", "charges", "cost", "kitna"];
   if (generalRateTriggers.some((r) => lower.includes(r))) {
-    recordEnquiry(phone, "ड्राई क्लीनिंग रेट लिस्ट");
+    recordEnquiry(phone, "ड्राई क्लीनिंग रेट लिस्ट", { rawQuery: text, customerName });
     session.step = "price_menu";
     return [
       "हमारे यहाँ सभी प्रकार के कपड़ों की ड्राई क्लीनिंग व स्टीम प्रेसिंग उपलब्ध है।\n\n" +
@@ -556,7 +556,8 @@ function handleLocalRules(phone, text, lower, session) {
 // ---------------------------------------------------------------------
 // Main Message Handler (Async with AI + Local Fallback)
 // ---------------------------------------------------------------------
-async function handleMessage(phone, rawText) {
+async function handleMessage(phone, rawText, metadata = {}) {
+  const customerName = metadata.customerName || "";
   const text = (rawText || "").trim();
   const lower = text.toLowerCase();
   const session = getSession(phone);
@@ -625,7 +626,7 @@ async function handleMessage(phone, rawText) {
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerTriggers.some((o) => lower.includes(o))) {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -665,7 +666,7 @@ async function handleMessage(phone, rawText) {
     const matchedCategory = findCategory(text);
     if (matchedCategory) {
       session.step = "menu";
-      recordEnquiry(phone, `${matchedCategory} ड्राई क्लीनिंग`);
+      recordEnquiry(phone, `${matchedCategory} ड्राई क्लीनिंग`, { rawQuery: text, customerName });
       const listResult = categoryPriceListText(matchedCategory);
       const listMessages = Array.isArray(listResult) ? listResult : [listResult];
       return [...listMessages, ...menuFooter()];
@@ -709,7 +710,7 @@ async function handleMessage(phone, rawText) {
   }
   if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
   if (text === "8") {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)");
+    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -720,12 +721,12 @@ async function handleMessage(phone, rawText) {
       // Record customer inquiry if question was about prices, garments or dry cleaning
       const priceKeywords = [
         "rate", "price", "kitna", "dry clean", "saaf", "dhulai", "cost", "charge",
-        "kambal", "saree", "coat", "blazer", "lehenga", "suit", "jacket", "curtain", "parda", "sofa", "carpet"
+        "kambal", "saree", "coat", "blazer", "lehenga", "suit", "jacket", "curtain", "parda", "sofa", "carpet", "daag", "stain", "delivery", "pickup", "urgent", "iron", "press"
       ];
       if (priceKeywords.some((k) => lower.includes(k))) {
         const matches = searchGarment(text);
         const itemName = matches.length > 0 ? matches[0].garment : "ड्राई क्लीनिंग";
-        recordEnquiry(phone, itemName);
+        recordEnquiry(phone, itemName, { rawQuery: text, customerName });
       }
       return [aiReply.trim()];
     }
@@ -734,7 +735,7 @@ async function handleMessage(phone, rawText) {
   }
 
   // 6. Seamless Local NLP & Garment Search fallback
-  return handleLocalRules(phone, text, lower, session);
+  return handleLocalRules(phone, text, lower, session, customerName);
 }
 
 // ---------------------------------------------------------------------
