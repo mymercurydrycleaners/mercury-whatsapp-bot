@@ -278,8 +278,26 @@ async function sendManualReminder(id, sendWhatsAppTextFn) {
   await sendWhatsAppTextFn(enquiry.phone, msg);
   enquiry.status = "sent";
   enquiry.reminderSentAt = new Date().toISOString();
+  enquiry.lastError = null;
   saveEnquiries();
   return { success: true, message: "Reminder sent successfully" };
+}
+
+/**
+ * Send custom reminder text from admin dashboard
+ */
+async function sendCustomReminder(id, customMsg, sendWhatsAppTextFn) {
+  if (!sendWhatsAppTextFn) throw new Error("WhatsApp sender function not available");
+  const enquiry = enquiries.find((e) => e.id === id);
+  if (!enquiry) throw new Error("Enquiry not found");
+
+  await sendWhatsAppTextFn(enquiry.phone, customMsg);
+  enquiry.status = "sent";
+  enquiry.reminderSentAt = new Date().toISOString();
+  enquiry.customMessageSent = customMsg;
+  enquiry.lastError = null;
+  saveEnquiries();
+  return { success: true, message: "Custom message sent successfully" };
 }
 
 /**
@@ -382,6 +400,7 @@ module.exports = {
   reopenEnquiry,
   deleteEnquiry,
   sendManualReminder,
+  sendCustomReminder,
   processPendingReminders,
   getReminderMessage,
   getEnquiryStats,

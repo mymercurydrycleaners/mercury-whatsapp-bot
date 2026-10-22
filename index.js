@@ -16,6 +16,7 @@ const {
   reopenEnquiry,
   deleteEnquiry,
   sendManualReminder,
+  sendCustomReminder,
   getSettings,
   saveSettings,
   setOwnerNotifier
@@ -123,11 +124,18 @@ app.post("/api/auth/verify", (req, res) => {
   }
 });
 
-// Get enquiries list and stats
-app.get("/api/enquiries", (req, res) => {
+// Get enquiries list and stats (and trigger pending reminders check)
+app.get("/api/enquiries", async (req, res) => {
+  try {
+    await processPendingReminders(sendWhatsAppText);
+  } catch (err) {
+    console.error("Dashboard reminder runner error:", err.message);
+  }
+
   res.json({
     stats: getEnquiryStats(),
     enquiries: getAllEnquiries(),
+    serverTime: new Date().toISOString(),
     settings: {
       ownerAlertPhone: getSettings().ownerAlertPhone,
       enableWhatsAppAlerts: getSettings().enableWhatsAppAlerts
@@ -148,6 +156,20 @@ app.post("/api/enquiries/:id/reopen", (req, res) => {
     res.json({ success: true, stats: getEnquiryStats() });
   } else {
     res.status(404).json({ error: "Enquiry not found" });
+  }
+});
+
+// Send custom WhatsApp message from dashboard
+app.post("/api/enquiries/:id/custom-message", async (req, res) => {
+  try {
+    const { message } = req.body || {};
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: "Message cannot be empty" });
+    }
+    const result = await sendCustomReminder(req.params.id, message.trim(), sendWhatsAppText);
+    res.json({ success: true, ...result, stats: getEnquiryStats() });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -460,12 +482,25 @@ app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
   console.log(`Live Enquiry Dashboard available at: /admin`);
 
-  // Background processor: Check and send pending enquiry reminders every 5 minutes
+  // Background processor: Check and send pending enquiry reminders every 30 seconds
   setInterval(async () => {
     try {
       await processPendingReminders(sendWhatsAppText);
     } catch (err) {
       console.error("Auto-reminder runner error:", err.message);
     }
-  }, 5 * 60 * 1000);
+  }, 30 * 1000);
+
+  // Render Sleep-Proof Keep-Alive: pings every 4 minutes whenever there are pending enquiries
+  setInterval(async () => {
+    try {
+      const stats = getEnquiryStats();
+      if (stats.pending > 0 && PUBLIC_BASE_URL) {
+        console.log(`[Keep-Alive] Pinging self to keep Render awake (${stats.pending} enquiries pending)...`);
+        await axios.get(`${PUBLIC_BASE_URL}/reminders/process`, { timeout: 10000 }).catch(() => {});
+      }
+    } catch (err) {
+      // silent
+    }
+  }, 4 * 60 * 1000);
 });
