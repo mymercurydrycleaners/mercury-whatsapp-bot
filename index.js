@@ -13,6 +13,7 @@ const {
   getAllEnquiries,
   getEnquiryById,
   resolveEnquiry,
+  reopenEnquiry,
   deleteEnquiry,
   sendManualReminder,
   getSettings,
@@ -138,6 +139,16 @@ app.get("/api/enquiries", (req, res) => {
 app.post("/api/enquiries/:id/resolve", (req, res) => {
   resolveEnquiry(req.params.id);
   res.json({ success: true, stats: getEnquiryStats() });
+});
+
+// Re-open enquiry as pending
+app.post("/api/enquiries/:id/reopen", (req, res) => {
+  const reopened = reopenEnquiry(req.params.id);
+  if (reopened) {
+    res.json({ success: true, stats: getEnquiryStats() });
+  } else {
+    res.status(404).json({ error: "Enquiry not found" });
+  }
 });
 
 // Send manual WhatsApp reminder from dashboard

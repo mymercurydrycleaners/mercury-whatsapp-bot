@@ -1242,7 +1242,10 @@
                 </div>
                 <div class="customer-phone">📞 +${cleanPhone}</div>
               </div>
-              <span class="badge ${badgeClass}">${badgeText}</span>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="badge ${badgeClass}">${badgeText}</span>
+                <button onclick="deleteEnquiry('${item.id}')" title="Delete" style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #f87171; border-radius: 6px; cursor: pointer; font-size: 13px; padding: 3px 6px;">🗑️</button>
+              </div>
             </div>
 
             <div class="inquiry-item">
@@ -1276,8 +1279,8 @@
                   <span>✅ Done</span>
                 </button>
               ` : `
-                <button class="btn btn-secondary" onclick="deleteEnquiry('${item.id}')" title="Delete">
-                  <span>🗑️ हटाएं</span>
+                <button class="btn btn-done" style="background: #3b82f6;" onclick="reopenEnquiry('${item.id}')" title="Re-open as Pending">
+                  <span>🔄 Re-open</span>
                 </button>
               `}
             </div>
@@ -1292,6 +1295,18 @@
         const res = await fetch(`/api/enquiries/${id}/resolve`, { method: "POST" });
         if (res.ok) {
           showToast("Enquiry Resolved ✅");
+          fetchData();
+        }
+      } catch (e) {
+        showToast("Error updating enquiry", "❌");
+      }
+    }
+
+    async function reopenEnquiry(id) {
+      try {
+        const res = await fetch(`/api/enquiries/${id}/reopen`, { method: "POST" });
+        if (res.ok) {
+          showToast("Enquiry पुनः Pending कर दी गई ⏳");
           fetchData();
         }
       } catch (e) {

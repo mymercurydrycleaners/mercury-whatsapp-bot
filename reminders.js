@@ -360,6 +360,18 @@ function getEnquiryById(id) {
   return enquiries.find((e) => e.id === id);
 }
 
+function reopenEnquiry(id) {
+  if (!id) return null;
+  const enquiry = enquiries.find((e) => e.id === id);
+  if (!enquiry) return null;
+
+  enquiry.status = "pending";
+  enquiry.resolvedAt = null;
+  enquiry.scheduledFor = calculateScheduledTime(new Date()).toISOString();
+  saveEnquiries();
+  return enquiry;
+}
+
 // Initial loads
 loadSettings();
 loadEnquiries();
@@ -367,6 +379,7 @@ loadEnquiries();
 module.exports = {
   recordEnquiry,
   resolveEnquiry,
+  reopenEnquiry,
   deleteEnquiry,
   sendManualReminder,
   processPendingReminders,

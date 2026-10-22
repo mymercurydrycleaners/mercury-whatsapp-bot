@@ -630,7 +630,22 @@ async function handleMessage(phone, rawText, metadata = {}) {
     return [getOfferMessage(), ...menuFooter()];
   }
 
-  // 2. Customer Satisfaction / Wrap-up / Thank You / Cancel
+  // 2a. Explicit Cancel / Stop (Customer says they don't want service)
+  const isExplicitCancel = [
+    "cancel", "stop", "nahi chahiye", "nahi lena", "mat bhejo", "zarurat nahi"
+  ].some((c) => lower === c || lower.includes("nahi chahiye"));
+
+  if (isExplicitCancel) {
+    resetSession(phone);
+    resolveEnquiry(phone);
+    return [
+      "जी ठीक है, हमने आपका अनुरोध नोट कर लिया है। यदि भविष्य में कपड़ों की ड्राई क्लीनिंग या स्टीम प्रेसिंग की आवश्यकता हो, तो हम सदैव आपकी सेवा में उपलब्ध हैं! 😊",
+      ...menuFooter()
+    ];
+  }
+
+  // 2b. Customer Friendly Acknowledgement / Wrap-up (e.g. "ok", "theek hai", "thanks", "dhanyawad")
+  // Note: We do NOT cancel the pending reminder on casual "ok/thanks" so customer gets friendly follow-up
   if (
     CLOSING_TRIGGERS.includes(lower) ||
     lower === "ok thanks" ||
@@ -638,15 +653,10 @@ async function handleMessage(phone, rawText, metadata = {}) {
     lower === "theek hai thanks" ||
     lower === "thik h bhaiya" ||
     lower === "thik hai bhaiya" ||
-    lower === "cancel" ||
-    lower === "stop" ||
-    lower === "nahi chahiye" ||
-    lower === "nahi" ||
     lower.startsWith("thank") ||
     lower.startsWith("dhanya")
   ) {
     resetSession(phone);
-    resolveEnquiry(phone);
     return [CLOSING_TEXT];
   }
 
