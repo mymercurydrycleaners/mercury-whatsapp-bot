@@ -836,20 +836,20 @@
     },
     {
       "garment": "Blanket Single",
-      "price": 200,
-      "drycleaning": 200,
+      "price": 250,
+      "drycleaning": 250,
       "steampress": 0
     },
     {
       "garment": "Blanket Double",
-      "price": 300,
-      "drycleaning": 300,
+      "price": 350,
+      "drycleaning": 350,
       "steampress": 0
     },
     {
       "garment": "blanket double (Heavy)",
-      "price": 350,
-      "drycleaning": 350,
+      "price": 400,
+      "drycleaning": 400,
       "steampress": 0
     },
     {

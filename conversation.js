@@ -133,20 +133,25 @@ function getOfferStatus() {
 }
 
 const SPECIAL_OFFER_TEXT =
-  `🎉 *Congratulations! आपका Special Discount Coupon तैयार है!* 🎉\n\n` +
-  `💚💛 Welcome to *MY MERCURY DRY CLEANERS, MAHOBA*\n\n` +
-  `सर्दियों के कंबल की सफाई पर पाइए शानदार ऑफर! ❄️✨\n\n` +
-  `🎁 *20% OFF — Blanket Dry Cleaning*\n\n` +
-  `🎟️ *Your Coupon Code:* *MM20*\n` +
-  `📅 *ऑफर वैलिडिटी (Offer Validity):* 16 अक्टूबर 2026 से 31 अक्टूबर 2026 तक (Valid: 16 Oct to 31 Oct 2026)\n\n` +
-  `✅ Premium Blanket Dry Cleaning\n` +
-  `✅ Professional Fabric Care\n` +
-  `✅ Hygienic Vacuum Packing\n` +
-  `✅ Pick-up & Drop Available\n\n` +
-  `📍 *1st Floor, Infront of Shukwari Bazar, Mahoba*\n\n` +
-  `📞 Shop: *091515 17444*\n\n` +
+  `🎉 *Upcoming Winter Special Offer — Blanket Dry Cleaning!* ❄️🛏️\n\n` +
+  `💚 Welcome to *MY MERCURY DRY CLEANERS, MAHOBA*\n\n` +
+  `सर्दियों की शुरुआत पर कंबलों की प्रीमियम ड्राई क्लीनिंग पर पाइए *Flat ₹50 की विशेष छूट!* ✨\n\n` +
+  `🏷️ *ऑफर रेट लिस्ट (Offer Price List):*\n` +
+  `• *Single Bed Blanket (सिंगल कंबल):* ~₹250~ ➔ *₹200* (₹50 OFF)\n` +
+  `• *Double Bed Blanket (डबल कंबल):* ~₹350~ ➔ *₹300* (₹50 OFF)\n` +
+  `• *Heavy Double Blanket (हैवी डबल कंबल):* ~₹400~ ➔ *₹350* (₹50 OFF)\n\n` +
+  `🎟️ *Coupon Code:* *WINTER50*\n` +
+  `*(या बताएं: Upcoming Winter Offer)*\n` +
+  `📅 *ऑफर वैलिडिटी:* *31 अक्टूबर 2026 तक सीमित* (Valid till: 31 Oct 2026)\n\n` +
+  `✨ *मुख्य विशेषताएं:*\n` +
+  `✅ 100% Germ-Free Deep Wool Care & Sanitization\n` +
+  `✅ Soft Fluff & Fragrance Finish\n` +
+  `✅ Hygienic Dust-Proof Vacuum Packing\n` +
+  `✅ Doorstep Pickup & Delivery Available\n\n` +
+  `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
+  `📞 *दुकान / पूछताछ:* *091515 17444*\n` +
   `🤖 *My Mercury AI Assistant*\n\n` +
-  `💚 अपना कूपन इस्तेमाल करने के लिए बुकिंग के समय *MM20* बताएं।\n\n` +
+  `💚 अपना कूपन इस्तेमाल करने के लिए बुकिंग के समय *WINTER50* बताएं।\n\n` +
   `*धन्यवाद! आपकी पसंदीदा सफाई, हमारी जिम्मेदारी।*`;
 
 const NO_OFFER_TEXT =
@@ -429,6 +434,23 @@ function getGarmentEmoji(garmentName, category) {
 }
 
 function formatMatches(matches) {
+  const isBlanketQuery = matches.some((m) => /blanket|kambal/i.test(m.garment || ""));
+  const { isActive } = getOfferStatus();
+
+  if (isBlanketQuery && isActive) {
+    return (
+      `🛏️✨ *Blanket Dry Cleaning Rates (Upcoming Winter Offer):*\n\n` +
+      `• *Single Bed Blanket (सिंगल कंबल):* ~₹250~ ➔ *₹200* (₹50 OFF ✨)\n` +
+      `• *Double Bed Blanket (डबल कंबल):* ~₹350~ ➔ *₹300* (₹50 OFF ✨)\n` +
+      `• *Heavy Double Bed Blanket (हैवी डबल कंबल):* ~₹400~ ➔ *₹350* (₹50 OFF ✨)\n\n` +
+      `🎟️ *Coupon Code:* *WINTER50*\n` +
+      `📅 *ऑफर वैलिडिटी:* 31 अक्टूबर 2026 तक सीमित!\n` +
+      `✨ *सफाई:* 100% जर्म-फ्री डीप वूल केयर, सॉफ्ट फिनिश व डस्ट-प्रूफ पैकिंग\n\n` +
+      `📍 *स्थान:* ${SHOP_ADDRESS_SHORT}\n` +
+      `📞 *बुकिंग व होम पिकअप:* *${SHOP_PHONE}*`
+    );
+  }
+
   const firstEmoji = getGarmentEmoji(matches[0]?.garment, matches[0]?.category);
   if (matches.length === 1) {
     const m = matches[0];
@@ -460,14 +482,15 @@ function formatMatches(matches) {
 }
 
 function handleLocalRules(phone, text, lower, session, customerName = "") {
-  // 0. Special Offer Inquiry (MM20 - 16 Oct to 31 Oct 2026)
+  // 0. Special Offer Inquiry (Upcoming Winter Offer - 16 Oct to 31 Oct 2026)
   const offerKeywords = [
     "offer", "offers", "discount", "discounts", "coupon", "coupons", "promo",
-    "promocode", "scheme", "chhut", "chut", "mm20", "kambal offer", "blanket offer",
+    "promocode", "scheme", "chhut", "chut", "mm20", "winter50", "winter offer",
+    "winter", "upcoming winter", "upcoming winter offer", "kambal offer", "blanket offer",
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerKeywords.some((o) => lower.includes(o))) {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
+    recordEnquiry(phone, "Blanket Upcoming Winter Offer (₹50 OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -619,14 +642,15 @@ async function handleMessage(phone, rawText, metadata = {}) {
     return [getShopTimingStatusMessage(), ...menuFooter()];
   }
 
-  // 1f. Special Offers & Discount Coupon (MM20 - 16 Oct to 31 Oct 2026)
+  // 1f. Special Offers & Discount Coupon (Upcoming Winter Offer - 16 Oct to 31 Oct 2026)
   const offerTriggers = [
     "offer", "offers", "discount", "discounts", "coupon", "coupons", "promo",
-    "promocode", "scheme", "chhut", "chut", "mm20", "kambal offer", "blanket offer",
+    "promocode", "scheme", "chhut", "chut", "mm20", "winter50", "winter offer",
+    "winter", "upcoming winter", "upcoming winter offer", "kambal offer", "blanket offer",
     "festive offer", "diwali offer", "special offer", "deal", "deals"
   ];
   if (offerTriggers.some((o) => lower.includes(o))) {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
+    recordEnquiry(phone, "Blanket Upcoming Winter Offer (₹50 OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 
@@ -720,7 +744,7 @@ async function handleMessage(phone, rawText, metadata = {}) {
   }
   if (text === "7") return [ESCALATION_TEXT, ...menuFooter()];
   if (text === "8") {
-    recordEnquiry(phone, "कंबल ड्राई क्लीनिंग स्पेशल ऑफर (20% OFF)", { rawQuery: text, customerName });
+    recordEnquiry(phone, "Blanket Upcoming Winter Offer (₹50 OFF)", { rawQuery: text, customerName });
     return [getOfferMessage(), ...menuFooter()];
   }
 

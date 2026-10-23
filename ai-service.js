@@ -77,8 +77,9 @@ AUTHENTIC PRICING SPECTRUM (From Official 157-item Price Catalog 2026-27):
   * Ladies Suit (2Pc): ₹150 | Suit (3Pc / Heavy): ₹200 - ₹250
   * Gown / Long Dress: ₹200 - ₹300 | Dupatta: ₹40
 - Home & Winter Linen:
-  * Blanket Single (एकल कंबल): ₹200
-  * Blanket Double (डबल कंबल): ₹300
+  * Blanket Single (एकल कंबल): ₹250 (Offer: ₹200 with coupon WINTER50)
+  * Blanket Double (डबल कंबल): ₹350 (Offer: ₹300 with coupon WINTER50)
+  * Blanket Double Heavy (हैवी डबल कंबल): ₹400 (Offer: ₹350 with coupon WINTER50)
   * Quilt / Rajai Single (रज़ाई): ₹150 | Quilt Double: ₹250
   * Bed Sheet Single: ₹40 | Bed Sheet Double: ₹60
   * Curtains (पर्दे): ₹50 - ₹80 per piece
@@ -223,22 +224,22 @@ function getRealTimeContext() {
 function getSystemPrompt() {
   const rtc = getRealTimeContext();
   const offerPrompt = rtc.isOfferActive
-    ? `SPECIAL ACTIVE FESTIVAL / WINTER DISCOUNT OFFER (VALID: 16 OCT 2026 TO 31 OCT 2026):
-- Offer: 20% OFF on Blanket (कंबल) Dry Cleaning
-- Coupon Code: MM20
+    ? `SPECIAL ACTIVE FESTIVAL / UPCOMING WINTER DISCOUNT OFFER (VALID TILL 31 OCT 2026):
+- Offer: UPCOMING WINTER OFFER - Flat ₹50 OFF on all Blanket (कंबल) Dry Cleaning!
+- Coupon Code: WINTER50 (or tell them: "Upcoming Winter Offer")
+- Offer Pricing:
+  * Single Bed Blanket: Normal ₹250 -> Offer Price: ₹200 (₹50 OFF)
+  * Double Bed Blanket: Normal ₹350 -> Offer Price: ₹300 (₹50 OFF)
+  * Heavy Double Bed Blanket: Normal ₹400 -> Offer Price: ₹350 (₹50 OFF)
 - Key Benefits:
-  * Premium Blanket Dry Cleaning
-  * Professional Fabric Care
-  * Hygienic Vacuum Packing
-  * Pick-up & Drop Available
-- Discounted Rates with MM20 Coupon:
-  * Blanket Single (एकल कंबल): Normal ₹200 -> With MM20 (20% OFF): ₹160
-  * Blanket Double (डबल कंबल): Normal ₹300 -> With MM20 (20% OFF): ₹240
+  * 100% Germ-Free Deep Wool Care & Sanitization
+  * Soft Fluff & Fragrance Finish
+  * Hygienic Dust-Proof Vacuum Packing
+  * Doorstep Pickup & Delivery Available
 - STRICT TRIGGER INSTRUCTION:
-  * DO NOT volunteer, mention, or display this offer in normal greetings (Hi, Hello), general questions, or regular garment inquiries.
-  * ONLY share the 20% OFF offer details when the customer explicitly asks about offers, discounts, coupons, schemes, promo codes, deals, or asks "koi offer hai kya"!
-  * When they DO ask, provide the full coupon details (20% OFF Blanket Dry Cleaning, Coupon Code: MM20) and ALWAYS clearly mention the validity dates: 16 October 2026 to 31 October 2026!
-  * Tell them: "बुकिंग के समय कूपन कोड MM20 बताएं और 20% छूट पाएं!"`
+  * If a customer asks about blanket / kambal rates, you can mention both the normal price and the ₹50 OFF with coupon WINTER50!
+  * If a customer asks about offers, discounts, coupons, schemes, deals, or asks "koi offer hai kya" or "winter offer", provide the full offer details (Flat ₹50 OFF on all blankets, Coupon Code: WINTER50, valid till 31 Oct 2026).
+  * Tell them: "कपड़े देते समय कूपन कोड WINTER50 बताएं और ₹50 की छूट पाएं!"`
     : `CURRENT PROMOTIONS STATUS:
 - Currently, there is NO active discount or promotional offer available (No offers now).
 - When a customer asks about offers, discounts, coupons, schemes, deals, or selects option 8:

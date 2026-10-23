@@ -255,8 +255,14 @@ function deleteEnquiry(id) {
  */
 function getReminderMessage(item) {
   const garment = item || "कपड़ों की ड्राई क्लीनिंग";
+  const isBlanket = /blanket|kambal|कंबल|winter/i.test(garment || "");
+  const offerBonus = isBlanket
+    ? `🎁 *Upcoming Winter Offer:* 31 अक्टूबर तक कूपन कोड *WINTER50* के साथ कंबलों की ड्राई क्लीनिंग पर *Flat ₹50 की विशेष छूट* पाएं! ❄️✨\n\n`
+    : "";
+
   return (
     `🙏 नमस्ते! आपने *My Mercury Dry Cleaners*, Mahoba से *${garment}* के बारे में जानकारी ली थी। 😊\n\n` +
+    offerBonus +
     `क्या आप आज कपड़े दुकान पर ला रहे हैं, या आपको कोई अन्य जानकारी चाहिए?\n\n` +
     `📍 *दुकान का पता:*\n${SHOP_ADDRESS_SHORT}\n*(शुक्रवारी बाज़ार के सामने, पुराने प्राइवेट बस स्टैंड के पास)*\n\n` +
     `🗺️ *Google Maps:* ${SHOP_MAPS_URL}\n` +
